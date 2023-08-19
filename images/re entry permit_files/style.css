@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+@import "/common/css/ptg/reset.css";
+@import "/common/css/ptg/layout.css";
+@import "/common/css/ptg/content.css";
+@import "/common/css/ptg/popup.css";
+
+@import "/common/css/ptg/ses/sub.css";
+@import "/common/css/ptg/pt.css";
+@import "/common/css/ptg/pt_info.css";
+/* @import "/common/css/ptg/pt_popup.css"; */
+
+@import "/common/css/ptg/jquery-ui-1.10.4.custom.css";

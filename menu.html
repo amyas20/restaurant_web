@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="with=device-width, initial-scale=1.0">
+<title>ALUKA'S KITCHEN</title>
+<link rel="stylesheet"   href="project.css">
+ <link rel="stylesheet" href="style.css">
+<link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@100;200;300;400;500;600;700&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+    />
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<section class="subheader">
+
+<nav>
+<h1 class="titler">ALUKA'S KITCHEN</h1><br>
+<div class="nav-links" >
+<i class="fa fa-times"> </i>
+<ul>
+<li><a href="project.html">HOME</a></li>
+<li><a href="about.html">ABOUT</a></li>
+<li><a href="menu.html">MENU</a></li>
+<li><a href="contact.html">CONTACT US</a></li>
+<li><a href="faq.html">FAQ</a></li>
+</ul>
+</div>
+
+</nav>
+<h1>OUR MENU</h1>
+</section>
+<section class="menu-row">
+
+<h1 align="center">Weekly Menu</h1>
+<p align="center">Our menu compromises of three main meals shuffled randomly through out the week.</p>
+<div class="menu">
+<div class="menu-col">
+<img src="images/meat.jpg">
+<h3>Steak</h3>
+<p>We offer steak on Tuesdays</p>
+</div>
+
+
+
+<div class="menu-col">
+<img src="images/spags.jpg">
+<h3>Spaghetti</h3>
+<p>We offer Italian sphagetti</p>
+</div>
+
+<div class="menu-col">
+<img src="images/pork.jpeg">
+<h3>Stir Fried Pork</h3>
+<p>We offer stir fried pork</p>
+</div>
+</div>
+
+</section>
+
+<section class="slidershow">
+<div class="slider">
+      <div class="slides">
+        <!--radio buttons start-->
+        <input type="radio" name="radio-btn" id="radio1">
+        <input type="radio" name="radio-btn" id="radio2">
+        <input type="radio" name="radio-btn" id="radio3">
+        <input type="radio" name="radio-btn" id="radio4">
+        <!--radio buttons end-->
+        <!--slide images start-->
+        <div class="slide first">
+          <img src="images/platter.jpg" alt="">
+        </div>
+        <div class="slide">
+          <img src="images/meat.jpg" alt="">
+        </div>
+        <div class="slide">
+          <img src="images/back.jpg" alt="">
+        </div>
+        <div class="slide">
+          <img src="images/back.png" alt="">
+        </div>
+        <!--slide images end-->
+        <!--automatic navigation start-->
+        <div class="navigation-auto">
+          <div class="auto-btn1"></div>
+          <div class="auto-btn2"></div>
+          <div class="auto-btn3"></div>
+          <div class="auto-btn4"></div>
+        </div>
+        <!--automatic navigation end-->
+      </div>
+      <!--manual navigation start-->
+      <div class="navigation-manual">
+        <label for="radio1" class="manual-btn"></label>
+        <label for="radio2" class="manual-btn"></label>
+        <label for="radio3" class="manual-btn"></label>
+        <label for="radio4" class="manual-btn"></label>
+      </div>
+      <!--manual navigation end-->
+    </div>
+    <!--image slider end-->
+
+    <script type="text/javascript">
+    var counter = 1;
+    setInterval(function(){
+      document.getElementById('radio' + counter).checked = true;
+      counter++;
+      if(counter > 4){
+        counter = 1;
+      }
+    }, 5000);
+    </script>
+</section>
+<section class="footer">
+          <h4>About Us</h4>
+          <p><i>To our favorite community of home clients we say: Welcome to Aluka's Kitchen 
+
+We may have a different name today, but there’s one thing that will never change, and that’s what you can expect from us:
+
+ALL THE FOOD YOU’LL EVER NEED. PERIOD.</i></p>
+<hr style="height:2px;border-width:0;color:red;background-color:red">
+          <div class="icons">
+            <i class="fab fa-facebook-square"></i>
+            <i class="fab fa-instagram-square"></i>
+            <i class="fab fa-twitter-square"></i>
+            <i class="fab fa-snapchat-square">@alukas_kitchen</i>
+          </div>
+          <p>Explore great taste with us</p><i class="fas fa-utensils"></i><i class="fas fa-utensils"></i>
+<i class="fas fa-utensils"></i>
+
+
+        </section>
+
+</section>
+
+   
+  </body>
+</html>
+
+
+</body>
+
+</html>

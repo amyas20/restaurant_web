@@ -1,0 +1,282 @@
+/********************************************
+@함수명  	gfn_trimSpecialChar
+@설명   	문자열 내의 특수문자를 제거한다.
+@인자   	String str
+@반환    	특수문자가 제거된 문자열
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_trimSpecialChar(str){
+	if(gfn_isNull(str)){
+		return str;
+	}
+	str = str.replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi,"").replace(/^\s+|\s+$/g, ""); 
+	return str;
+}
+
+/********************************************
+@함수명  	gfn_isNumber
+@설명   	입력한 문자열이 숫자로 구성되어 있는지 체크한다.
+@인자   	String str
+@반환    	true (문자열이 모두 숫자로 구성되어 있는 경우),
+		  	false (문자열에 숫자 외의 문자가 있는 경우)
+@작성일  	2014. 5. 13.
+@작성자  	
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	            최초작성
+*********************************************/
+function gfn_isNumber(str){
+	if(gfn_isNull(str) == true)
+		return str;
+	
+	var reg = /[^0-9]/g;
+	return reg.test(str) ? false : true;
+}
+
+/********************************************
+@함수명  	gfn_isNumberKey - onkeyup으로 호출
+@설명   	입력한 문자열이 숫자로 구성되어 있는지 체크한다.
+@인자   	String id - input tag의 아이디
+@반환    	
+@작성일  	2014. 5. 13.
+@작성자  	
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	            최초작성
+ *********************************************/
+function gfn_isNumberKey(id){
+	var str = $("#"+id);
+	var reg = /[^0-9]/g;
+	var returnStr = str.val();
+	if(reg.test(str.val())){
+		str.val(str.val().substring(0,(str.val().length-1)));
+	}
+}
+
+/********************************************
+@함수명  	gfn_toUpper
+@설명   	대문자로 변환한다.
+@인자   	String str
+@반환    	대문자로 변환된 문자열
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_toUpper(str){
+	if(gfn_isNull(str))
+		return str;
+	str = str.toUpperCase();
+	return str;
+}
+
+/********************************************
+@함수명  	gfn_toLpper
+@설명   	소문자로 변환한다.
+@인자   	String str
+@반환    	소문자로 변환된 문자열
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_toLower(str){
+	if(gfn_isNull(str))
+		return str;
+	str = str.toLowerCase();
+	return str;
+}
+
+/********************************************
+@함수명  	gfn_isEnglish
+@설명   	입력한 문자열이 영문(공백 포함_옵션에 따라)으로 구성되어 있는지 체크한다.
+@인자   	String str, Boolean isIncludeSpace(공백포함여부)
+@입력형태 	문자열, true or false
+@반환    	true (문자열이 모두 영문으로 구성되어 있는 경우),
+		  	false (문자열에 영문 외의 문자가 있는 경우)
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_isEnglish(str, isIncludeSpace) {
+	if(gfn_isNull(str))
+		return str;
+	
+	var reg = (isIncludeSpace == true) ? /[^a-zA-Z\s]/g : /[^a-zA-Z]/g;  
+	
+	return reg.test(str) ? false : true;
+}
+	
+/********************************************
+@함수명  	gfn_isKorean
+@설명   	입력한 문자열이 한글(공백 포함_옵션에 따라)로 구성되어 있는지 체크한다.
+@인자   	String str, Boolean isIncludeSpace(공백포함여부)
+@입력형태 	문자열, true or false
+@반환    	true (문자열이 모두 한글로 구성되어 있는 경우),
+		  	false (문자열에 한글 외의 문자가 있는 경우)
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_isKorean(str, isIncludeSpace) {
+	if(gfn_isNull(str))
+		return str;
+	var reg = (isIncludeSpace == true) ? /[^ㄱ-힣\s]/g : /[^ㄱ-힣]/g;  
+	
+	return reg.test(str) ? false : true;
+}
+
+/********************************************
+@함수명  	gfn_isEnglishAndNumber
+@설명   	입력한 문자열이 영문과 숫자(공백 포함)로 구성되어 있는지 체크한다.
+@인자   	String str
+@반환    	true (문자열이 영문과 숫자만으로 구성되어 있는 경우),
+		  	false (문자열에 영문과 숫자 외의 문자가 있는 경우)
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_isEnglishAndNumber(str){
+	if(gfn_isNull(str)) 
+		return str;
+	var reg = /[^a-zA-Z\s0-9]/g;
+	return reg.test(str) ? false : true;
+}
+
+/********************************************
+@함수명  	gfn_isSpecialChar
+@설명   	입력한 문자열이 특수문자로 구성되어 있는지 체크한다.
+@인자   	String str
+@반환    	true (문자열이 특수문자만으로 구성되어 있는 경우),
+		  	false (문자열에 특수문자 외의 문자가 있는 경우)
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_isSpecialChar(str){
+	if(gfn_isNull(str))
+		return str;
+	var reg = /[^\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/;
+	return reg.test(str) ? false : true;
+}
+
+/********************************************
+@함수명  	gfn_trim
+@설명   	문자열 내의 공백을 제거한다.
+@인자   	String str
+@반환    	공백이 제거된 문자열
+@작성일  	2014. 5. 13.
+@작성자  	      
+@변경일			변경자        변경내역 
+<br>--------------------------------------------<br>
+2014. 5. 13.	              최초작성
+*********************************************/
+function gfn_trim(str){
+	if(gfn_isNull(str)){
+		return str;
+	}
+	str = str.replace(/\s*/g, "");
+	return str;
+}
+
+/********************************************
+@함수명  	gfn_spaceName
+@설명   	입력된 문자에 대해서 공백 및 특수문자를 제거한다.
+@인자		없음
+@반환		없음
+@작성일  	2018. 03. 05.
+@작성자  	박상용
+@변경일			변경자        변경내역 
+2018. 03. 05.	박상용        최초작성
+*********************************************/
+function gfn_spaceName(str){
+	
+	var data = str.value;
+	if(gfn_isNull(data)){
+		return;
+	}
+	retVal = data.toUpperCase(); 														//대문자 치환
+	retVal = retVal.replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi,""); 	//특수문자
+	retVal = retVal.replace(/(^\s*)|(\s*$)/gi, ""); 									//앞뒤 공백
+	
+	str.value = retVal;
+}
+
+/********************************************
+@함수명  	gfn_checkNumberValidation
+@설명   	입력된 문자에 대해서 숫자 여부를 체크한다.
+@인자		없음
+@반환		없음
+@작성일  	2018. 03. 05.
+@작성자  	박상용
+@변경일			변경자        변경내역 
+2018. 03. 05.	박상용        최초작성
+*********************************************/
+function gfn_checkNumberValidation(obj){	
+	
+	if(gfn_isNull($("#"+obj).val())){
+		return;
+	}
+	var value = gfn_isNumber($("#"+obj).val());
+
+	if(value == false){
+		gfn_alert("숫자만 입력이 가능합니다.", function(){
+			$("#"+obj).val("");
+			$("#"+obj).focus();
+		});				
+		return;
+	}
+}
+
+/********************************************
+@함수명  	gfn_getAge
+@설명   	만나이를 계산하여 return 한다.
+@인자		없음
+@반환		없음
+@작성일  	2018. 03. 05.
+@작성자  	박상용
+@변경일			변경자        변경내역 
+2018. 03. 05.	박상용        최초작성
+*********************************************/
+function gfn_getAge(obj){
+	
+	if(gfn_isNull(obj)){
+		return 0;
+	}else if(obj.length == 13){
+
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = (date.getMonth()+1);
+		var day = date.getDate();
+		if(month < 10) month = "0" + month;
+		if(day < 10) day = "0" + day;
+		var monthDay = month + day;
+		
+		var byy = obj.substring(0, 2);
+		var birthMonthDay = obj.substring(2, 6);
+		var bChk = obj.substring(6, 7);
+		
+		if(bChk == "3" || bChk == "4" || bChk == "7" || bChk == "8"){
+			byy = "20" + byy;
+		}else{
+			byy = "19" + byy;
+		}
+		var age = monthDay < birthMonthDay ? year - byy - 1 : year - byy;
+		return age;
+	}
+	return 0;
+}

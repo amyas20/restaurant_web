@@ -1,0 +1,1685 @@
+/**
+ * @type : intro
+ * @desc : ecv.js는 전자민원시스템에서 공통으로 사용하는 자바 스크립트를 기술한
+ * 자바스크립트 파일이다.
+ *
+ * @version : 1.0
+ * @change  :
+ * <pre>
+ *     <font color="blue">V1.0</font>
+ *     - 최초버전.
+ * </pre>
+ */
+
+/*
+** 언어코드
+*/
+//var langCd = location.href.substring(location.href.lastIndexOf("_")+1, location.href.lastIndexOf(".")).toLowerCase();
+var langCd = "kr";
+if(location.href.indexOf("_en.") >= 0){
+	langCd = "en";
+}else if(location.href.indexOf("_ja.") >= 0){
+	langCd = "en";
+}else if(location.href.indexOf("_zh.") >= 0){
+	langCd = "zh";
+}else{
+	langCd = "kr";
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 첨부파일 그룹을 선택하였을때 하위 첨부파일 목록을 갱신해주는 펑션
+ * @apndFileGbSeq   : apndFileGbSeq 첨부파일그룹순번
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfChgApndFileList(cvlapplCd, apndFileGbSeq, applApndFileGbSeq, langCd, appYn){
+
+    cfOpenRunning(true);
+
+    var form = document.forms[formId];
+
+    form.target = "hiddenFrame";
+    form.action = "LinkApndFileInfoR_"+langCd+".pt";
+
+    var apndSeq = document.createElement("INPUT");
+
+    apndSeq.type = "hidden";
+    apndSeq.name = "apndFileGbSeq";
+    apndSeq.value = apndFileGbSeq;
+
+    form.insertAdjacentElement("beforeEnd",apndSeq);
+
+    var applApndSeq = document.createElement("INPUT");
+
+    applApndSeq.type = "hidden";
+    applApndSeq.name = "applApndFileGbSeq";
+    applApndSeq.value = applApndFileGbSeq;
+
+    form.insertAdjacentElement("beforeEnd",applApndSeq);
+
+    var cvlapplCdTag = document.createElement("INPUT");
+
+    cvlapplCdTag.type = "hidden";
+    cvlapplCdTag.name = "cvlapplCd";
+    cvlapplCdTag.value = cvlapplCd;
+
+    form.insertAdjacentElement("beforeEnd",cvlapplCdTag);
+
+    var appYnTag = document.createElement("INPUT");
+    appYnTag.type = "hidden";
+    appYnTag.name = "appYn";
+    appYnTag.value = appYn;
+
+    form.insertAdjacentElement("beforeEnd",appYnTag);
+
+    form.submit();
+    apndSeq.removeNode();
+    applApndSeq.removeNode();
+    cvlapplCdTag.removeNode();
+    appYnTag.removeNode();
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 민원작성 화면에서 신청하기 버튼 클릭  function 결제 모듈로 이동한다.
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfPayApplication(formId, tot){
+    var form = document.forms[formId];
+    var inputTags = null;
+    
+    try{
+        if ( $('#'+formId+' id="oApndFileTable"').length > 0 ) {
+        	inputTags = document.getElementById("oApndFileTable").getElementsByTagName("INPUT");
+        }
+        else
+    	{
+        	inputTags = null;
+    	}
+    }catch(e){
+        inputTags = null;
+    }
+
+    var fileTags = new Array();
+    var fileTagIndex = 0;
+
+    for(var i=0; inputTags != null && i<inputTags.length; i++){
+
+        var docNameTd = null;
+        var neceYn = null;
+
+        try{
+            docNameTd = document.getElementById(inputTags[i].getAttribute("name").substring(0,4)+"DocName");
+            neceYn = docNameTd.className.substring(docNameTd.className.lastIndexOf(" ")+1);
+        }catch(e){
+            docNameTd = null;
+            neceYn = "";
+        }
+
+        //파일 필수여부 체크
+        if(inputTags[i].type == "file" && inputTags[i].className == "inputdata readonly"){
+            fileTags[fileTagIndex++] = inputTags[i];
+            if(!cfValidateElement(inputTags[i])){
+                return false;
+            }
+            var docName = inputTags[i].getAttribute("validExp").substring(0,inputTags[i].getAttribute("validExp").lastIndexOf(":")).trim();
+            var necessary = inputTags[i].getAttribute("validExp").substring(inputTags[i].getAttribute("validExp").lastIndexOf(":")+1).trim();
+
+            if(inputTags[i].value != ""){
+                var extTf = false ;
+                var fileExt = inputTags[i].value.substring(inputTags[i].value.lastIndexOf(".")+1,inputTags[i].value.length).toUpperCase();
+
+                // if(fileExt != 'TIFF' && fileExt != 'JPG' && fileExt != 'JPEG'  ){//확장자 체크(tiff, jpg // 기존 프로그램의 확장자 체크
+                // 확장자의 확대, 이현진, 2016.01.21
+                var typeCat =['TIF','TIFF','JPG','JPEG','GIF','BMP','PNG','PDF'];
+
+                for(var j=0; j<typeCat.length; j++){
+                    // alert("확장자체크 : "+fileExt+";"+typeCat[j]);
+                    if(fileExt == typeCat[j]){
+                        extTf = true;
+                        break ;
+                    }
+                }
+
+                if(extTf==false){
+                    if(langCd == "kr"){
+                        cfAlertMsg(MSG_COM_ERR_036,[docName+'의 확장자','tiff, tif, jpg, jpeg, gif, bmp, png, pdf']);
+                    }else{
+                        cfAlertMsg(MSG_COM_ERR_036,[docName+'’s extension','tiff, tif, jpg, jpeg, gif, bmp, png, pdf']);
+                    }
+                    return;
+                }
+
+                //var maxFileSize = 512*1000;//512KB by 파일사이즈 및 확장자체크 수정,2016.01.01
+                var maxFileSize = 1024*1000;//1024KB //파일사이즈 및 확장자체크 수정,2016.01.01
+
+                if(getFileSize(inputTags[i].value) > maxFileSize){
+                    if(langCd == "kr"){
+                        cfAlertMsg(MSG_PT_INF_021,[docName+'의 최대 사이즈는 1024KB입니다. 다시 확인하십시오.']);
+                    }else{
+                        cfAlertMsg(MSG_PT_INF_021,['Maximum size for '+docName+' is 1024 KB. Please check again']);
+                    }
+                    return;
+                }
+            }
+        }
+
+        //그외 필수여부 체크
+        if(neceYn == "necessary"){
+            if(inputTags[i].type == "text"){
+                try{
+                    var checkYn = document.getElementById(inputTags[i].name.substring(0,4)+"Yn");
+
+                    if(checkYn.value == "N"){
+                        var alertMsg = null;
+                        var docName = docNameTd.innerText;
+                        docName = docName.substring(docName.lastIndexOf(".")+1);
+
+                        if(langCd == "kr"){
+                            alertMsg = "정보조회 버튼을 클릭하여 "+docName+"의 존재여부를 확인하십시요.";
+                        }else{
+                            alertMsg = "Please check and see if "+docName+" exists by clicking on the View info button";
+                        }
+
+                        cfAlertMsg(MSG_PT_INF_021,[alertMsg]);
+                        return false;
+                    }else{
+                    	console.log("185 line: ecv.js");
+                        if(!cfValidateElement(inputTags[i])){
+                            return false;
+                        }
+                    }
+                }catch(e){//납세사실 증명서 발급번호와 증명서 유효기간
+                    if(!cfValidateElement(inputTags[i])){
+                        return false;
+                    }
+                }
+            }else if(inputTags[i].type == "hidden"){
+                try{
+                    if(inputTags[i].value == "N"){
+                    	var alertMsg = null;
+                        var docName = docNameTd.innerText;
+                        docName = docName.substring(docName.lastIndexOf(".")+1);
+
+                        if(langCd == "kr"){
+                        	alertMsg = "정보조회 버튼을 클릭하여 "+docName+"의 존재여부를 확인하십시요.";
+                        }else{
+                            alertMsg = "Please check and see if "+docName+" exists by clicking on the View info button";
+                        }
+                        cfAlertMsg(MSG_PT_INF_021,[alertMsg]);
+                        return false;
+                    }
+                }catch(e){
+                }
+            }
+        }
+    }
+
+    var sameFileErrorMsg = null;
+
+    if(langCd == "kr"){
+        sameFileErrorMsg = "동일한 이름의 파일이 존재합니다.\n파일선택을 다시 하세요.";
+    }else{
+        sameFileErrorMsg = "A file with an identical name already exists.\nPlease choose another file.";
+    }
+
+    //동일한 이름의 파일이 있는지 체크
+    var file1 = null; var file2 = null;
+
+    for(var i=0; i<fileTags.length-1; i++){		//현재 첨부한 파일과 비교
+
+        file1 = fileTags[i].value.substring(fileTags[i].value.lastIndexOf("\\")+1);
+
+        for(var j=i+1; j<fileTags.length; j++){
+
+        	file2 = fileTags[j].value.substring(fileTags[j].value.lastIndexOf("\\")+1);
+
+            if(fileTags[i].value!="" && file1 == file2){
+                cfAlertMsg(MSG_PT_INF_021,[sameFileErrorMsg]);
+                return false;
+            }
+        }
+    }
+
+    var form = document.forms[formId];
+
+   /* var cvlapplCdTag = document.createElement("INPUT");
+
+    cvlapplCdTag.type = "hidden";
+    cvlapplCdTag.name = "cvlapplCd";
+    cvlapplCdTag.value = form.cvlapplCd.value;
+
+    form.insertAdjacentElement("beforeEnd",cvlapplCdTag); 모야이거 hhs*/
+
+    if(form.mobileTelNo == null || form.mobileTelNo == undefined){	//고용변동신고인 경우
+    	var mobileNoTag = document.createElement("INPUT");
+    	mobileNoTag.type = "hidden";
+        mobileNoTag.name = "mobileTelNo";
+
+    	mobileNoTag.value = "";
+    	form.insertAdjacentElement("beforeEnd",mobileNoTag);
+    } 
+    var emailTag = document.createElement("INPUT");
+
+    if(form.email == null || form.email == undefined){	//이메일이 없는 경우
+    	emailTag.type = "hidden";
+        emailTag.name = "email";
+    	if(form.emailText != null){	//외국인등록인경우
+            emailTag.value = form.emailText.value + "@" +form.emailDomain.value;
+        }else{	//고용변동신고인 경우
+            emailTag.value = "";
+        }
+    }else{
+        emailTag.value = form.email.value;
+    }
+
+    form.insertAdjacentElement("beforeEnd",emailTag);
+
+    var payOptionTag = document.createElement("INPUT");
+
+    
+
+    if(document.getElementById("oCvlapplCd") != null && document.getElementById("oCvlapplCd").value == "12700000093"){
+    	payOptionTag.type = "hidden";
+        payOptionTag.name = "payOption";
+        var reEExprYmdTag = document.createElement("INPUT");
+
+        reEExprYmdTag.type = "hidden";
+        reEExprYmdTag.name = "reEExprYmd";
+        reEExprYmdTag.value = form.reEExprYmd.value;
+
+        form.insertAdjacentElement("beforeEnd",reEExprYmdTag);
+
+        payOptionTag.value = form.reEApplGb.value;
+
+    }else{
+    	payOptionTag.type = "hidden";
+        payOptionTag.name = "payOption";
+        payOptionTag.value = "";
+    }
+
+    form.insertAdjacentElement("beforeEnd",payOptionTag);
+
+    if(document.getElementById("oCvlapplCd") != null && document.getElementById("oCvlapplCd").value == "12700000097"){
+
+    	var noFeeTag = document.createElement("INPUT");
+
+	    noFeeTag.type = "hidden";
+	    noFeeTag.name = "noFee";
+	    noFeeTag.value = form.noFee.value;
+
+	    form.insertAdjacentElement("beforeEnd",noFeeTag);
+    }
+
+    with(form){
+
+        if(document.getElementById("oCvlapplCd") != null && document.getElementById("oCvlapplCd").value == "12700000005"){
+
+        	cfOpenRunning(true);
+
+            var formObj = form;
+
+            formObj.method = "post";
+            formObj.action = "/cvlappl/CvlapplEmpChangeRprterCM.pt";
+            formObj.target = "_self";
+            formObj.submit();
+        }else{
+        	// 결제건이 1개일 경우 결제로 이동 	
+            if(tot == 1) {
+	        	target = "hiddenFrame";
+	            action = "/cvlappl/CvlapplChrgTypeDetailR.pt" //CvlapplChrgTypeDetailR.pt?formId= + formId; test hhs
+	        	//form.action = "/cvlappl/saveCvlapplStep3.pt";
+	        	submit();
+            }
+            // 결제건이 1개 이상일 경우 장바구니에 담고 정상일 경우 alert 처리 및 슬라이드 닫음
+            else {
+	            var form = document.forms[formId];
+	            form.method = "post";
+	            form.target = "_self";
+	            form.action = "/cvlappl/saveCvlapplStep3.pt";
+	            form.submit();
+            }
+           /* error 때문에 주석처리 hhs 
+            * ecv.js:337 Uncaught TypeError: cvlapplCdTag.removeNode is not a function 
+            * cvlapplCdTag.removeNode();
+            mobileNoTag.removeNode();
+            emailTag.removeNode();
+            payOptionTag.removeNode();*/
+
+            if (reEExprYmdTag!=null) reEExprYmdTag.removeNode();
+        }
+    }
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 결제후 민원신청
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfApplicate(formId){
+
+    cfOpenRunning(true);
+    alert("가상의 결제루틴까지 민원신청 완료! 나머지 부분은 xvarm때문에 stop ");
+    return;
+    
+    var form = document.forms[formId];
+    form.method = "post";
+    form.target = "_self";
+    form.action = "/cvlappl/CvlapplAppcDetailR.pt";
+    form.submit();
+}
+
+var fileTagCount = 1;
+var fileTagObject = null;
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 파일태그를 생성하는 펑션
+ * @targetObjName   : 파일태그를 생성하려는 위치
+ * @newTagNamePrepix   : 파일태그 이름의 앞자리
+ * @return : 없음
+ * @author : 류정호
+
+**/
+function cfCvlapplFileAdd(targetObjName, newTagNamePrepix, validExpString, buttonValue){
+
+	var allElement = document.getElementsByTagName("INPUT");
+
+    for(var i=0; i<allElement.length; i++){
+        try{
+            if(allElement[i].type == "file" && allElement[i].className == "inputdata readonly"){
+                if(allElement[i].name.substring(0,allElement[i].name.lastIndexOf("_")) == newTagNamePrepix){
+                    if(allElement[i].value == ""){
+                        if(langCd == "kr"){
+                            cfAlertMsg(MSG_COM_WRN_003,['파일']);
+                        }else{
+                            cfAlertMsg(MSG_COM_WRN_003,['file']);
+                        }
+                        return false;
+                    }
+                }
+            }
+        }catch(e){
+            return false;
+        }
+    }
+    ++fileTagCount;
+
+    var newBrTag = null;
+
+    newBrTag = document.createElement("BR");
+    document.getElementById(targetObjName).insertAdjacentElement("beforeEnd", newBrTag);
+
+    var newFileTag = null;
+
+    newFileTag = document.createElement("INPUT");
+    newFileTag.type = "file";
+    newFileTag.className = "inputdata readonly";
+    newFileTag.style.width = "300px";
+    newFileTag.validExp = validExpString;
+    newFileTag.name = newTagNamePrepix + "_" + fileTagCount;
+    newFileTag.id = newFileTag.name;
+
+    document.getElementById(targetObjName).insertAdjacentElement("beforeEnd", newFileTag);
+}
+
+function FileSelect(obj){
+    var rtn = document.FileAccess.FileSelect();
+    if( rtn!='CANCEL' ){
+        obj.value = rtn;
+    }
+}
+
+function cfFilebuttonAttachEvent(){
+    FileSelect(fileTagObject);
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 파일태그를 삭제하는 펑션(가장 마지막 위치를 삭제한다.)
+ * @targetObjName   : 파일태그가 생성되어있는 위치
+ * @return : 없음
+ * @author : 류정호
+**/
+function cfCvlapplFileRemove(targetObjName){
+
+	var targetObj = document.getElementById(targetObjName);
+	var agt = navigator.userAgent;
+    for(var i=0; i<3; i++){
+        if(targetObj.children.length != 0){
+        	if(agt.match(/Trident\/(\d.\d)/i) != null){
+        		targetObj.children[targetObj.children.length-1].removeNode();
+        	}else{
+        		targetObj.children[targetObj.children.length-1].remove();
+        	}
+        }
+    }
+    
+    if (fileTagCount > 1) {
+    	fileTagCount = fileTagCount - 1;	
+    }
+}
+
+var openwin;
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 결제모듈에서 결제 완료후 PG사와 통신중 메인페이지를 다른 곳으로 이동하지 못하게 하는 펑션
+ * @return : 없음
+ * @author : 류정호
+**/
+function cfFocusControl(){
+    try{
+        var form = hiddenFrame.document.forms[0];
+        if(form != null && form != undefined && form.name == "payForm"){
+            if(form.clickcontrol.value == "disable"){
+                openwin.focus();
+            }
+        }
+    }catch(e){
+    }
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 결제 대기 팝업창을 닫는다.
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfClosePayPopup(){
+    if(openwin != null && openwin != undefined){
+        openwin.close();
+    }
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 민원 재신청 화면에서 신청하기 버튼 클릭  function
+ * @return : 없음
+ * @author : 문수환
+ */
+function fncApplicate(formName){
+    var form = null;
+    var forms = document.forms;
+
+    for(var i=0; i<forms.length; i++){
+        if(forms[i].name == formName){
+            form = forms[i];
+            break;
+        }
+    }
+    var inputTags = null;
+    try{
+    	inputTags = document.getElementById("oApndFileTable").getElementsByTagName("INPUT");
+    }catch(e){
+        inputTags = null;
+    }
+
+    var fileTags = new Array();
+    var fileTagIndex = 0;
+
+    for(var i=0; inputTags != null && i<inputTags.length; i++){
+
+        var docNameTd = null;
+        var neceYn = null;
+
+        try{
+            docNameTd = document.getElementById(inputTags[i].name.substring(0,4)+"DocName");
+            neceYn = docNameTd.className.substring(docNameTd.className.lastIndexOf(" ")+1);
+        }catch(e){
+            docNameTd = null;
+            neceYn = "";
+        }
+
+        //파일 필수여부 체크
+        if(inputTags[i].type == "file" && inputTags[i].className == "inputdata readonly"){
+
+            fileTags[fileTagIndex++] = inputTags[i];
+
+            if(!cfValidateElement(inputTags[i])){
+                return false;
+            }
+
+            var docName = inputTags[i].validExp.substring(0,inputTags[i].validExp.lastIndexOf(":")).trim();
+            var necessary = inputTags[i].validExp.substring(inputTags[i].validExp.lastIndexOf(":")+1).trim();
+
+            if(inputTags[i].value != ""){
+                var extTf = false ;
+                var fileExt = inputTags[i].value.substring(inputTags[i].value.lastIndexOf(".")+1,inputTags[i].value.length).toUpperCase();
+
+                /*
+                if(fileExt != 'TIFF' && fileExt != 'JPG' && fileExt != 'JPEG'){//확장자 체크(tiff, jpg
+                    if(langCd == "kr"){
+                        cfAlertMsg(MSG_COM_ERR_036,[docName+'의 확장자','tiff, jpg, jpeg']);
+                    }else{
+                        cfAlertMsg(MSG_COM_ERR_036,[docName+'’s extension','tiff, jpg, jpeg']);
+                    }
+                    return;
+                }
+                */
+
+                var typeCat =['TIF','TIFF','JPG','JPEG','GIF','BMP','PNG','PDF'];
+
+                for( var j=0; j<typeCat.length; j++){
+                    // alert("확장자체크 : "+fileExt+";"+typeCat[j]);
+                    if(fileExt == typeCat[j]){
+                        extTf = true ;
+                        break ;
+                    }
+                }
+                if(extTf==false){
+                    if(langCd == "kr"){
+                        cfAlertMsg(MSG_COM_ERR_036,[docName+'의 확장자','tiff, tif, jpg, jpeg, gif, bmp, png, pdf']);
+                    }else{
+                        cfAlertMsg(MSG_COM_ERR_036,[docName+'’s extension','tiff, tif, jpg, jpeg, gif, bmp, png, pdf']);
+                    }
+                    return;
+                }
+
+                var maxFileSize = 512*1000;//5메가 바이트
+
+                if(getFileSize(inputTags[i].value) > maxFileSize){
+                    if(langCd == "kr"){
+                        cfAlertMsg(MSG_PT_INF_021,[docName+'의 최대 사이즈는 512KB입니다. 다시 확인하십시오.']);
+                    }else{
+                        cfAlertMsg(MSG_PT_INF_021,['Maximum size for '+docName+' is 512 KB. Please check again']);
+                    }
+                    return;
+                }
+            }
+        }
+
+        //그외 필수여부 체크
+        if(neceYn == "necessary"){
+            if(inputTags[i].type == "text"){
+                try{
+                    var checkYn = document.getElementById(inputTags[i].name.substring(0,4)+"Yn");
+                    if(checkYn.value == "N"){
+                        var alertMsg = null;
+                        var docName = docNameTd.innerText;
+                        docName = docName.substring(docName.lastIndexOf(".")+1);
+                        if(langCd == "kr"){
+                            alertMsg = "정보조회 버튼을 클릭하여 "+docName+"의 존재여부를 확인하십시요.";
+                        }else{
+                            alertMsg = "Please check and see if "+docName+" exists by clicking on the View info button";
+                        }
+                        cfAlertMsg(MSG_PT_INF_021,[alertMsg]);
+                        return false;
+                    }
+                }catch(e){//납세사실 증명서 발급번호와 증명서 유효기간
+                    if(!cfValidateElement(inputTags[i])){
+                        return false;
+                    }
+                }
+            }else if(inputTags[i].type == "hidden"){
+                try{
+                    if(inputTags[i].value == "N"){
+                    	var alertMsg = null;
+                        var docName = docNameTd.innerText;
+                        docName = docName.substring(docName.lastIndexOf(".")+1);
+
+                        if(langCd == "kr"){
+                        	alertMsg = "정보조회 버튼을 클릭하여 "+docName+"의 존재여부를 확인하십시요.";
+                        }else{
+                            alertMsg = "Please check and see if "+docName+" exists by clicking on the View info button";
+                        }
+                        cfAlertMsg(MSG_PT_INF_021,[alertMsg]);
+                        return false;
+                    }
+                }catch(e){
+                }
+            }
+        }
+    }
+
+    var sameFileErrorMsg = null;
+
+    if(langCd == "kr"){
+        sameFileErrorMsg = "동일한 이름의 파일이 존재합니다.\n파일선택을 다시 하세요.";
+    }else{
+        sameFileErrorMsg = "A file with an identical name already exists.\nPlease choose another file.";
+    }
+
+    //동일한 이름의 파일이 있는지 체크
+    var file1 = null; var file2 = null;
+
+    for(var i=0; i<fileTags.length-1; i++){//현재 첨부한 파일과 비교
+        file1 = fileTags[i].value.substring(fileTags[i].value.lastIndexOf("\\")+1);
+        for(var j=i+1; j<fileTags.length; j++){
+            file2 = fileTags[j].value.substring(fileTags[j].value.lastIndexOf("\\")+1);
+            if(fileTags[i].value!="" && file1 == file2){
+                cfAlertMsg(MSG_PT_INF_021,[sameFileErrorMsg]);
+                return false;
+            }
+        }
+    }
+    var attachedFiles = new Array();
+    var attachedFileIndex = 0;
+    var divElements = document.getElementsByTagName("div");
+
+    //기존파일찾기
+    for(var i=0; i<divElements.length; i++){
+        if(divElements[i].id.substring(0,13) == "attachedFiles"){
+            var fileNames = divElements[i].innerText;
+            var tempFileNames = fileNames.split(" ");
+            for(var j=0; j<tempFileNames.length; j++){
+                if(tempFileNames[j].trim() != ""){
+                    attachedFiles[attachedFileIndex++] = tempFileNames[j].trim();
+                }
+            }
+        }
+    }
+
+    for(var i=0; i<fileTags.length; i++){//기존에 첨부한 파일과 비교
+        file1 = fileTags[i].value.substring(fileTags[i].value.lastIndexOf("\\")+1);
+        for(var j=0; j<attachedFiles.length; j++){
+            file2 = attachedFiles[j];
+            if(fileTags[i].value!="" && file1 == file2){
+                cfAlertMsg(MSG_PT_INF_021,[sameFileErrorMsg]);
+                return false;
+            }
+        }
+    }
+
+    //파일업로드
+    /*for(var i=0; inputTags != null && i<inputTags.length; i++){
+        if(inputTags[i].type == "text" && inputTags[i].className == "inputdata readonly"){
+            cfXecureFileUpload(form, inputTags[i].name);
+        }
+    }*/
+
+    cfOpenRunning(true);
+    //form.action   = "/pt/CvlapplReAppcDetailR_"+langCd+".sec";
+    form.target   = "_top";
+	//XecureSubmit(form);
+	form.action   = "/pt/CvlapplReAppcDetailR_"+langCd+".pt";
+	form.submit();
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 민원 재신청화면에서 신청시 입력한 첨부파일 목록 삭제
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfRemoveAttachedFiles(attachedFiles){
+
+    if(cfConfirmMsg(MSG_COM_CRM_004, [])){
+        var attachedFileTag = document.getElementById(attachedFiles);
+        attachedFileTag.innerHTML = "<input type='hidden' name='"+attachedFiles+"' value='Y'>";
+
+        var isLinkApndFile = false;
+        var fileNameTag = attachedFileTag.parentElement.parentElement.children[0];
+        if(isNaN(fileNameTag.innerHTML.substring(0,1))){//연계증빙서류인 경우
+            var linkFileTrTag = attachedFileTag.parentElement.parentElement;
+            var apndFileTableTag = attachedFileTag.parentElement.parentElement.parentElement;
+            for(var i=0; i<apndFileTableTag.children.length; i++){
+                if(apndFileTableTag.children[i] == linkFileTrTag){
+                    fileNameTag = apndFileTableTag.children[i-2].children[0];
+                    break;
+                }
+            }
+        }
+
+        var neceYn = fileNameTag.className;
+        neceYn = neceYn.substring(neceYn.lastIndexOf(" ")+1)
+        if(neceYn == "necessary"){
+            var innerTags = attachedFileTag.parentElement.parentElement.children[1].children;
+            for(var i=0; i<innerTags.length; i++){
+                try{
+                    if(innerTags[i].type == "file" && innerTags[i].className == "inputdata readonly"){
+                        var prepixOfValidExp = innerTags[i].validExp.substring(0, innerTags[i].validExp.lastIndexOf(":")+1)
+                        innerTags[i].validExp = prepixOfValidExp+"yes";
+                    }
+                }catch(e){
+                }
+            }
+        }
+    }
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 첨부문서 연계 조회 시
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfLinkApndFile1(codeName, neceYn, appYn){
+
+    var codeKey = document.getElementById(codeName+"Key");
+    var codeKey1 = document.getElementById(codeName+"Key1");
+
+    //psy add 17.03.15
+    if(codeKey == null){
+    	codeKey = document.getElementsByName(codeName + "Key")[0];
+    }
+
+    if(codeKey1 == null){
+    	codeKey1 = document.getElementsByName(codeName + "Key1")[0];
+    }
+    //
+
+    // 유효성 체크
+    console.log('753 line : ecv.js');
+    if (codeKey != null && cfValidateElement(codeKey) == false) {
+        return false;
+    }
+    console.log('757 line : ecv.js');
+    if (codeKey1 != null && cfValidateElement(codeKey1) == false) {
+        return false;
+    }
+
+    cfOpenRunning(true);
+
+    var form = document.forms[formId];
+    form.target = "hiddenFrame";
+    form.action = "LinkApndFileInfoR_"+langCd+".pt";
+
+    var codeNameTag = document.createElement("INPUT");
+    codeNameTag.type = "hidden";
+    codeNameTag.name = "codeName";
+    codeNameTag.value = codeName;
+    form.insertAdjacentElement("beforeEnd",codeNameTag);
+
+    var neceYnTag = document.createElement("INPUT");
+    neceYnTag.type = "hidden";
+    neceYnTag.name = "neceYn";
+    neceYnTag.value = neceYn;
+    form.insertAdjacentElement("beforeEnd",neceYnTag);
+
+    var codeKeyTag = document.createElement("INPUT");
+    codeKeyTag.type = "hidden";
+    codeKeyTag.name = "codeKey";
+    //codeKeyTag.value = codeKey!=null?document.getElementById(codeName+"Key").value:"";
+    codeKeyTag.value = codeKey != null ? codeKey.value : "";
+    form.insertAdjacentElement("beforeEnd",codeKeyTag);
+
+    var codeKey1Tag = null;
+    if(codeKey1 != null){
+        codeKeyTag1 = document.createElement("INPUT");
+        codeKeyTag1.type = "hidden";
+        codeKeyTag1.name = "codeKey1";
+        //codeKeyTag1.value = codeKey1!=null?document.getElementById(codeName+"Key1").value:"";
+        codeKeyTag1.value = codeKey1 != null ? codeKey1.value : "";
+        form.insertAdjacentElement("beforeEnd",codeKeyTag1);
+    }
+
+    var appYnTag = document.createElement("INPUT");
+    appYnTag.type = "hidden";
+    appYnTag.name = "appYn";
+    appYnTag.value = appYn;
+    form.insertAdjacentElement("beforeEnd",appYnTag);
+
+    form.submit();
+    codeNameTag.removeNode();
+    neceYnTag.removeNode();
+    codeKeyTag.removeNode();
+    if(codeKey1 != null){
+        codeKeyTag1.removeNode();
+    }
+    appYnTag.removeNode();
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 민원신청 버튼을 클릭하여 신원인증하려 할때.
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfGoIdentity(formObj, gbCd, sessionUserId, certStsYn, natCd, userGbCd, isHoliday, serviceStartTime, serviceEndTime, curTime, sFlag){
+
+    var langString = null;
+
+    if(langCd == 'ja'){// || langCd == 'zh'){ //중문활성화 2016.08.18
+        if(langCd == 'ja'){
+            langString = 'オンライン民願は韓?語及び英文ペ?ジのみでサ?ビスします。\n移動しますか。';
+        }else if(langCd == 'zh'){
+            langString = '在线请求仅在韩国语和英语网页上提供服务。\n您要去吗？';
+        }
+
+        if(cfConfirmMsg(MSG_PT_INF_021,[langString])){
+            formObj.locale.value = "ko";
+            formObj.action = "/pt/CvlapplInfoDetailR_kr.pt";
+            formObj.submit();
+            return;
+        }
+        return;
+    }
+
+    //IE여부 체크
+    //if( !document.all ){
+    //    if(langCd == 'kr'){
+    //        cfAlertMsg(MSG_PT_INF_021,['온라인 민원은 Internet Explorer만 신청 가능합니다.']);
+    //    }else if(langCd == 'en'){
+    //        cfAlertMsg(MSG_PT_INF_021,['Online application is only available for Internet Explorer']);
+    //    }else if(langCd == 'ja'){
+    //        cfAlertMsg(MSG_PT_INF_021,['オンライン民願はInternet Explorerのみ申請できます。']);
+    //    }else{
+    //        cfAlertMsg(MSG_PT_INF_021,['在??求只能在????器上申?']);
+    //    }
+    //   return false;
+    //}
+
+    if(sessionUserId == ""){//로그인하지 않은 경우
+        cfAlertMsg(MSG_COM_ERR_071,['']);
+        formObj.target = "_self";
+        formObj.action = "/pt/LoginM_"+langCd+".pt";
+        formObj.submit();
+        return;
+    }
+
+    //alert("curTime<"+curTime);
+    //alert("isHoliday<"+isHoliday);
+    //alert("serviceStartTime<"+serviceStartTime);
+    //alert("serviceEndTime<"+serviceEndTime);
+    //alert("sessionUserId<"+sessionUserId);
+    //if(!(!isHoliday && serviceStartTime <= curTime && curTime <= serviceEndTime)){	//서비스 시각이 아닌 경우
+    if(sessionUserId != 'sc432' && sessionUserId != 'okesg2010' && sessionUserId != 'dongpo2010' && sessionUserId != 'dongpo2016' && (!(!isHoliday && serviceStartTime <= curTime && curTime <= serviceEndTime))){//서비스 시각이 아닌 경우
+
+        var startTime = serviceStartTime.substring(0,2) + ":" + serviceStartTime.substring(2,4);
+        var endTime = serviceEndTime.substring(0,2) + ":" + serviceEndTime.substring(2,4);
+        var alertMsg = null;
+
+        if(langCd == "kr"){
+            alertMsg = "민원신청가능시간";
+        }else{
+            alertMsg = "Applications accepted on the following time slot";
+        }
+        cfAlertMsg(MSG_COM_WRN_015,[alertMsg,'',startTime,'22:00']);
+        return;
+    }
+
+    var J01 = "12700000061";	//단기체류자의 출국을 위한 체류기간연장허가
+    var J02 = "12700000095";	//등록외국인의 출국을 위한 체류기간연장허가
+    var J03 = "12700000097";	//등록외국인의 체류기간연장허가
+    var J31 = "12700007A03";	//재외국민(F4)의 체류기간연장허가
+    var J04 = "12700000093";	//재입국허가(단수,복수)
+    var J05 = "12700000098";	//등록외국인의 체류자격부여
+    var J06 = "12700000099";	//등록외국인의 체류자격변경 허가
+    var J07 = "12700000000";	//단기체류자의 체류자격부여
+    var J08 = "12700000001";	//단기체류자의 체류자격변경 허가
+    var J09 = "12700000094";	//단기체류자의 체류기간연장허가
+    var J10 = "127000000FR";	//외국인등록
+    var J11 = "127000000RC";	//등록사항변경신고
+    var J12 = "127000000SO";	//체류자격외 활동허가
+    var J13 = "127000000WC";	//근무처 변경/추가
+    var J14 = "127000000AC";	//체류지 변경신고
+    var J15 = "12700000003";	//고용연수외국인변동사유발생신고
+    var J16 = "12700000004";	//외국인근로자 이탈신고
+    var J21 = "12700000100";	//등록사항변경신고H2
+    var J22 = "127000000MR";	//국제결혼 안내프로그램    	//2010.10.01 국제결혼 안내 프로그램, 황인규 추가
+    var J23 = "1270000KIIP";	//사회통합프로그램    		//2010.11.15 사회통합프로그램, HIK
+    var J32 = "12700000J32"; 	// 유학생 시간제취업 허가    // 2010.12.06 16:45 kfshc 유학생 시간제취업 민원업무 추가
+    var J33 = "12700000J33"; 	// 유학생 시간제취업 업체변경 신고
+    var J34 = "12700000005";	//@통합고용변동신고
+    var J35 = "12700000J35";    //#유학생
+    var J37 = "12700000J37";    //인도적 체류자(Y.J.H) 취업활동 허가
+    var J38 = "12700000J38";    //인도적 체류자(Y.J.H) 취업활동 신고
+    var J50 = "12700000GES";	//미국 자동출입국심사서비스
+
+    var civilForShortForeigner = new Array();	//단기체류 외국인을 위한 민원
+    civilForShortForeigner[0] = J01;
+    civilForShortForeigner[1] = J07;
+    civilForShortForeigner[2] = J08;
+    civilForShortForeigner[3] = J09;
+    civilForShortForeigner[4] = J10;
+
+    var civilForLongForeigner = new Array();//장기체류자 외국인을 위한 민원
+    civilForLongForeigner[0] = J02;
+    civilForLongForeigner[1] = J03;
+    civilForLongForeigner[2] = J04;
+    civilForLongForeigner[3] = J05;
+    civilForLongForeigner[4] = J06;
+    civilForLongForeigner[5] = J11;
+    civilForLongForeigner[6] = J12;
+    civilForLongForeigner[7] = J13;
+    civilForLongForeigner[8] = J14;
+    civilForLongForeigner[9] = J21;
+    civilForLongForeigner[10] = J31;
+    civilForLongForeigner[11] = J23;	// 2010.11.18 HIK 사회통합프로그램
+    civilForLongForeigner[13] = J32;	// 2010.12.06 16:45 kfshc 유학생 시간제취업 허가 추가
+    civilForLongForeigner[14] = J33;	// 2010.12.06 16:45 kfshc 유학생 시간제취업 업체변경 신고 추가
+    civilForLongForeigner[15] = J34;	// 통합고용변동신고
+    civilForLongForeigner[16] = J50;    //@미국 자동출입국 심사서비스
+    civilForLongForeigner[17] = J35;    //#유학생
+    civilForLongForeigner[18] = J37;    //인도적 체류자(Y.J.H)취업활동 허가
+    civilForLongForeigner[19] = J38;    //인도적 체류자(Y.J.H)취업활동 신고
+    civilForLongForeigner[12] = J22;    // 2011.02.22 HIK 국제결혼안내프로그램
+
+    var civilForReport = new Array();        //신고 민원(고용변동,이탈)
+    civilForReport[0] = J15;
+    civilForReport[1] = J16;
+    civilForReport[2] = J34;    //@통합고용변동신고
+
+    var cvlapplCd = formObj.cvlapplCd.value;
+
+    //#################################################################################################################
+    // @등록외국인의 체류자격변경허가
+    // @2016.06.03 HIK
+    //#################################################################################################################
+    if(langCd == 'zh' ){
+        if(cvlapplCd == J06){
+            var goKorStr = '在线请求仅在韩国语和英语网页上提供服务。\n您要去吗？';
+
+            if(cfConfirmMsg(MSG_PT_INF_021,[goKorStr])){
+                formObj.locale.value = "ko";
+                formObj.action = "/pt/CvlapplInfoDetailR_kr.pt";
+                formObj.submit();
+                return;
+            }
+            return;
+        }
+    }
+    //#################################################################################################################
+
+    var agentYn;
+    var actionString = null;
+    var applFlag = false;
+
+    if(certStsYn == "N"){ 	//회원 유형이 비인증 회원
+        //**********************************************
+        // 2010.11.18 HIK
+        // <사회통합프로그램 신청자 조건>
+        // 1.  체류만료자(X)
+        // 2.  단기 체류자(X)
+        // 3.  등록외국인(거소)(O)
+        // 4.  귀화국민(O)
+        //**********************************************
+
+        //########################################################
+        //#유학생담당자체류기간연장####################################
+        if(cvlapplCd == J35){
+            cfAlertMsg(MSG_PT_INF_022,['']);
+            return false;
+        }
+        //########################################################
+        //########################################################
+
+        // 국민이나 외국인이 회원유형이 비인증이면서
+        // 사회통합프로그램을 신청하면 return false 처리한다.
+        if(cvlapplCd == J23){
+            cfAlertMsg(MSG_PT_INF_022,['']);
+            return false;
+        }
+
+        // 국민이나 외국인이 회원유형이 비인증이면서
+        // 미국 자동출입국심사서비스를  신청하면 return false 처리한다.
+        if(cvlapplCd == J50){
+            cfAlertMsg(MSG_PT_INF_022,['']);
+            return false;
+        }
+
+        //2010.10.01 국제결혼 안내 프로그램, 황인규 추가
+        //J22와 내국인인경우는 바로 민원신청화면으로 이동한다.
+        if(cvlapplCd == J22 && natCd == "100"){
+            //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+        	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+        }else{
+            //########################################################
+            //#등록외국인의 체류자격변경허가################################
+            //단기인 경우 제외함
+            //########################################################
+            if(cvlapplCd != J06){
+
+	            for(var i=0; i<civilForShortForeigner.length; i++){		//단기체류자용 민원을 선택하지 않은 경우
+
+	                if(civilForShortForeigner[i] == cvlapplCd || J05 == cvlapplCd){
+	                    applFlag = true;
+	                    break;
+	                }
+	            }
+
+	            if(!applFlag){
+	                cfAlertMsg(MSG_PT_INF_022,['']);
+	                return false;
+	            }
+
+	            if(gbCd == 'N'){							//본인 민원신청
+	            	if(natCd == "100"){						//국적이 한국이면 신청 불가
+	            		cfAlertMsg(MSG_PT_INF_022,['']);
+	            		return false;
+	                }
+	            }else if(gbCd == 'Y'){						//대행신청은 불가
+	                cfAlertMsg(MSG_PT_INF_022,['']);
+	                return false;
+	            }
+
+	            if(cvlapplCd == J07 ||cvlapplCd == J05){	//체류자격 부여인 경우에는 바로 민원신청화면으로 이동
+	                //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+	            	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+	            }else{										//그 외의 경우에는 여권번호 신원인증화면으로 이동
+	                //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+	            	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+	            }
+            }else{
+                //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+            	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+            }
+        }
+    }else if(certStsYn == "Y"){		//회원 유형이 인증 회원
+        //**********************************************
+        // 2010.11.18 HIK
+        // <사회통합프로그램 신청자 조건>
+        // 1.  체류만료자(X)
+        // 2.  단기 체류자(X)
+        // 3.  등록외국인(거소)(O)
+        // 4.  귀화국민(O)
+        //**********************************************
+        //########################################################
+        //#유학생담당자체류기간연장####################################
+        //########################################################
+        if(cvlapplCd == J35 && natCd != "100"){
+            cfAlertMsg(MSG_PT_INF_022,['']);
+            return false;
+        }
+
+        //########################################################
+        //2010.10.01 국제결혼 안내 프로그램, HIK
+        //J22인경우는 바로 민원신청화면으로 이동한다.
+        if(cvlapplCd == J22 && natCd == "100"){
+            //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+        	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+        }else if(cvlapplCd == J50 && natCd == "100"){
+            //actionString = "/pt/GesReqC.sec";
+        	actionString = "/pt/GesReqC.pt";
+        }else if(cvlapplCd == J35 && natCd == "100"){
+            //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+        	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+        }else if(cvlapplCd == J06 && natCd == "100"){
+            //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+        	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+        }else if(cvlapplCd == J21 && natCd == "100"){		//2014.09.15 HIK 추가
+            //actionString = "/pt/CvlapplRegChgNotiH2MultiForm_"+langCd+".sec";
+        	actionString = "/pt/CvlapplRegChgNotiH2MultiForm_"+langCd+".pt";
+        }else{
+            //신고민원 신청대상 확인
+            for(var i=0; i<civilForReport.length; i++){		//즉, 신고 민원을 신청할 수 있는 조건은 인증회원이어야 함.
+                if(cvlapplCd == civilForReport[i]){
+                    applFlag = true;
+                    break;
+                }
+            }
+
+            if(applFlag){		//신고 민원을 신청가능하면 등록외국인 신원인증 화면으로 이동
+                if(cvlapplCd == J34){//통합고용변동신고는 별도 처리
+                   //@
+                   //공인인증 확인 화면
+                   //actionString = "/pt/CvlapplCertR_"+langCd+".sec";
+                   //actionString = "/pt/CvlapplFormNewR_"+langCd+".sec";
+                	//actionString = "/pt/BusiNoRegIdChkRM_"+langCd+".sec";
+                	actionString = "/pt/BusiNoRegIdChkRM_"+langCd+".pt";
+                }else if(cvlapplCd == J21){
+                	//actionString = "/pt/BusiNoRegIdChkRM_"+langCd+".sec";
+                	actionString = "/pt/BusiNoRegIdChkRM_"+langCd+".pt";
+                }else{
+                    //actionString = "/pt/CvlapplIdntConfRM_"+langCd+".sec";
+                	actionString = "/pt/CvlapplIdntConfRM_"+langCd+".pt";
+                }
+            }else{
+                for(var i=0; i<civilForLongForeigner.length; i++){	//장기체류 민원인 경우
+                    if(cvlapplCd == civilForLongForeigner[i]){
+                        applFlag = true;
+                        break;
+                    }
+                }
+                if(applFlag){
+                    if(natCd == "100"){			//내국인이 신청 한 경우
+                        if(gbCd == 'N'){		//본인신청 버튼을 클릭하였다면.... 민원신청 불가
+                        	//**********************************************
+                            // 내국인일때 사회통합프로그램(J23) 민원 처리 가능하도록
+                            //**********************************************
+                        	if(cvlapplCd == J23 || (cvlapplCd == J14 && userGbCd == "50")){
+                                //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+                        		actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+                            }else{
+                                cfAlertMsg(MSG_PT_INF_022,['']);
+                                return false;
+                            }
+                        }else if(gbCd == 'Y'){				//대행신청 버튼을 클릭하였다면... 등록외국인 신원인증화면으로 이동
+                            if(cvlapplCd == J10){			//외국인등록을 신청한 경우는 여권번호 신원인증화면으로 이동
+                                //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+                            }else if(cvlapplCd == J05){		//체류자격 부여인 경우에는 바로 민원신청화면으로 이동
+                                //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+                            }else{							//그 외의 경우에는 등록외국인 신원인증화면으로 이동
+                                //actionString = "/pt/CvlapplIdntConfRM_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplIdntConfRM_"+langCd+".pt";
+                            }
+                        }else{
+                            cfAlertMsg(MSG_PT_INF_022,['']);
+                            return false;
+                        }
+                    }else{						//외국인이 신청 한 경우
+                        //**************************************************
+                        // <사회통합프로그램>
+                        // 등록외국인이므로 민원화면으로 넘어가준다.
+                        // 2010.11.18 HIK
+                        //**************************************************
+                        if(gbCd == 'N'){		//본인신청 버튼을 클릭하였다면....
+                            if(cvlapplCd == J10){	//외국인등록을 신청한 경우는 여권번호 신원인증화면으로 이동
+                                //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+                            }else{					//그 외의 경우에는 민원신청화면으로 이동
+                                //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+                            }
+
+                            if (document.all) {
+                                var selfApplication = document.createElement("INPUT");
+                                selfApplication.type = "hidden";
+                                selfApplication.name = "selfApplication";
+                                selfApplication.value = "Y";
+                                formObj.insertAdjacentElement("beforeEnd",selfApplication);
+                            }else{
+                                var selfApplication = document.createElement("INPUT");
+                                selfApplication.setAttribute("type", "hidden");
+                                selfApplication.setAttribute("name", "selfApplication");
+                                selfApplication.setAttribute("value", "Y");
+                                formObj.appendChild(selfApplication);
+                            }
+                        }else if(gbCd == 'Y'){		//대행신청 버튼을 클릭하였다면... 등록외국인 신원인증화면으로 이동
+                            if(cvlapplCd == J10){	//외국인등록을 신청한 경우는 여권번호 신원인증화면으로 이동
+                                //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+                            }else if(cvlapplCd == J05){//체류자격 부여인 경우에는 바로 민원신청화면으로 이동
+                                //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+                            }else{					//그 외의 경우에는 등록외국인 신원인증화면으로 이동
+                                //actionString = "/pt/CvlapplIdntConfRM_"+langCd+".sec";
+                            	actionString = "/pt/CvlapplIdntConfRM_"+langCd+".pt";
+                            }
+                        }
+                    }
+                }else{		//단기체류 민원인지 확인
+                    for(var i=0; i<civilForShortForeigner.length; i++){		//단기체류 민원인 경우
+                        if(cvlapplCd == civilForShortForeigner[i]){
+                            applFlag = true;
+                            break;
+                        }
+                    }
+                    if(applFlag){
+                        if(natCd == "100"){				//내국인이 신청 한 경우
+                            if(gbCd == 'N'){			//본인신청 버튼을 클릭하였다면.... 민원신청 불가
+                                cfAlertMsg(MSG_PT_INF_022,['']);
+                                return false;
+                            }else if(gbCd == 'Y'){		//대행신청 버튼을 클릭하였다면...
+                                if(cvlapplCd == J07){	//체류자격 부여인 경우에는 바로 민원신청화면으로 이동
+                                    //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+                                	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+                                }else{					//그 외의 경우에는 여권번호 신원인증화면으로 이동
+                                    //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+                                	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+                                }
+                            }
+                        }else{							//외국인이 신청 한 경우
+                            if(gbCd == 'N'){			//본인신청 버튼을 클릭하였다면.... 민원신청 불가
+                                cfAlertMsg(MSG_PT_INF_022,['']);
+                                //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+                                actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+                                return false;
+                            }else if(gbCd == 'Y'){		//대행신청 버튼을 클릭하였다면...
+                                if(cvlapplCd == J07){	//체류자격 부여인 경우에는 바로 민원신청화면으로 이동
+                                    //actionString = "/pt/CvlapplFormR_"+langCd+".sec";
+                                	actionString = "/pt/CvlapplFormR_"+langCd+".pt";
+                                }else{					//그 외의 경우에는 여권번호 신원인증화면으로 이동
+                                    //actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".sec";
+                                	actionString = "/pt/CvlapplPassIdntConfRM_"+langCd+".pt";
+                                }
+                            }
+                        }
+                    }else{		//그외는 민원 신청 불가
+                        cfAlertMsg(MSG_PT_INF_022,['']);
+                        return false;
+                    }
+                }
+            }
+        }
+    }else{		//회원 유형이 없는 경우 민원신청 불가
+        cfAlertMsg(MSG_PT_INF_022,['']);
+        return false;
+    }
+
+    formObj.agentYn.value = gbCd;
+    //alert(actionString);
+
+    //########################################################
+    //#유학생담당자체류기간연장####################################
+    //########################################################
+    //if(cvlapplCd == J35 && actionString == "/pt/CvlapplFormR_kr.sec"){
+    if(cvlapplCd == J35 && actionString == "/pt/CvlapplFormR_kr.pt"){
+ 
+    	formObj.target = "_self";
+ 
+    	formObj.action = "/pt/CvlapplForeignStudentJuminNoChkR_kr.pt";
+    	formObj.submit();
+ 
+    }else if(cvlapplCd == J14 && actionString == "/pt/CvlapplFormR_kr.pt"){
+        if(sFlag == "Y"){
+            formObj.target = "_self";
+            formObj.action = actionString;
+            //XecureSubmit(formObj);
+            formObj.submit();
+        }else{
+            formObj.target = "certFrame";
+            formObj.certAction.value=actionString;
+            formObj.action = "/pt/SojPlaceCertR_kr.pt";
+            formObj.method = "post";
+            formObj.submit();
+        }
+    //}else if(cvlapplCd == J14 && actionString == "/pt/CvlapplIdntConfRM_kr.sec"){
+    }else if(cvlapplCd == J14 && actionString == "/pt/CvlapplIdntConfRM_kr.pt"){
+        if(sFlag == "Y"){
+            formObj.target = "_self";
+            formObj.action = actionString;
+            //XecureSubmit(formObj);
+            formObj.submit();
+        }else{
+            formObj.target = "certFrame";
+            formObj.certAction.value=actionString;
+            formObj.action = "/pt/SojPlaceCertR_kr2.pt";
+            formObj.method = "post";
+            formObj.submit();
+        }
+    //########################################################
+    //#등록외국인의 체류자격변경허가###############################
+    //########################################################
+    //}else if(cvlapplCd == J06 && actionString == "/pt/CvlapplFormR_kr.sec"){
+    }else if(cvlapplCd == J06 && actionString == "/pt/CvlapplFormR_kr.pt"){
+        if(userGbCd == "10"){
+            formObj.target = "_self";
+            //formObj.action = "/pt/CvlapplForeignStudentJuminNoChkR2_kr.sec";
+            //XecureSubmit(formObj);
+            formObj.action = "/pt/CvlapplForeignStudentJuminNoChkR2_kr.pt";
+            formObj.submit();
+        }else{
+            formObj.target = "_self";
+            formObj.action = actionString;
+            formObj.method = "post";
+            //XecureSubmit(formObj);
+            formObj.submit();
+        }
+    } else {
+	    formObj.target = "_self";
+	    formObj.action = actionString;
+	    formObj.method = "post";
+	    //XecureSubmit(formObj);
+	    formObj.submit();
+    }
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 관할출입국사무소 팝업창 호출 펑션
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfOpenLocIntro(locale){
+    cfOpen(700, 450, 2, "/pt/LocIntroPopupR_"+langCd+".pt?locale="+locale+"" , "LocIntroWin", "scrollbars=yes");
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 파일선택 후 파일사이즈 체크 펑션
+ * @return : 없음
+ * @author : 류정호
+ */
+function cfFileCheck(fileObject){
+
+    var filePath = document.FileAccess.FileSelect();
+    var form = document.forms[formId];
+    //form.target = "hiddenFrame";
+    //form.action = "LinkApndFileInfoR_"+langCd+".pt";
+
+    var fileCheckTag = document.createElement("INPUT");
+    fileCheckTag.type = "file";
+    fileCheckTag.name = "fileCheck";
+    fileCheckTag.value = filePath;
+    fileCheckTag.style.width="0px";
+    fileCheckTag.style.cursor="pointer";
+    form.insertAdjacentElement("beforeEnd",fileCheckTag);
+    fileObject.value = filePath;
+    fileCheckTag.value = filePath;
+}
+
+function cfMakeApndFile(codeName){
+
+    var actionName = null;
+
+    if(codeName == "C100" || codeName == "E100"){	//신원보증서
+        actionName = "GuaranteeCM";
+ 	}else{
+        actionName = "GuaranteeCM";
+    //}else if(codeName == "C101" || codeName == "E101") {//재입국동의서
+        //actionName = "ReEntryConsentCM";
+    }
+    cfOpen(820, 680, 2, "/pt/"+actionName+"_"+langCd+".pt?locale="+langCd, "makeApndWin", "");
+}
+
+function cfPublicCertify(codeName){
+    var form = document.forms[formId];
+    form.action = "/pt/CvlapplEvidenceCertR_kr.pt";
+    form.target = "hiddenFrame";
+    form.certCodeName.value = codeName;
+    form.submit();
+}
+
+function cfPublicCertify2(codeName){
+    var form = document.fgnLoginForm;
+    form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/CvlapplEvidenceCertR_kr2.pt";
+    form.certCodeName.value = codeName;
+    form.submit();
+}
+
+function cfPublicCertify6(codeName){
+    var form = document.detailForm;
+    //form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/CvlapplEvidenceCertR_kr6.pt";
+    form.certCodeName.value = codeName;
+    form.submit();
+}
+
+function cfPublicCertify6_en(codeName){
+    var form = document.detailForm;
+    form.target = "hiddenFrame";
+    form.action = "/pt/CvlapplEvidenceCertR_en6.pt";
+    form.certCodeName.value = codeName;
+    form.submit();
+}
+
+function activeXintPopup(){
+    cfOpen(820, 600, 2,"/pt/ActiveXinstall_kr.pt", "activeXinst", "");
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 익스 7 이상에서 파일 사이즈 체크하는 펑션
+ * @return : 없음
+ * @author : 이원규 2008.08.25 추가
+ */
+function fncFileSizeChk(f){
+    var form = f;
+    var inputTags = null;
+    try{
+        inputTags = document.getElementById("oApndFileTable").getElementsByTagName("INPUT");
+    }catch(e){
+        inputTags = null;
+    }
+
+    //파일업로드
+    /*for(var i=0; inputTags != null && i<inputTags.length; i++){
+        if(inputTags[i].type == "text" && inputTags[i].className == "inputdata readonly"){
+            //alert("inputTags[i].name<"+i+">"+"<"+inputTags[i].name+">");
+            cfXecureFileUpload(form, inputTags[i].name);
+        }
+    }*/
+
+    form.target = "hiddenFrame";
+    /*form.action = "/pt/FileSizeChk_kr.sec";
+    XecureSubmit(form);*/
+    form.action = "/pt/FileSizeChk_kr.pt";
+    form.submit();
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 익스 7 이상에서 파일 사이즈 및 파일 포맷을  체크하는 펑션 -> 전자민원 신규추가(국제결혼)
+ * @return : 없음
+ * @author : 2011.01.14 HIK
+ */
+function fncFileSizeChk2(f){
+
+    var form = f;
+    var inputTags = null;
+    try{
+        inputTags = document.getElementById("oInputTable3").getElementsByTagName("INPUT");
+    }catch(e){
+        inputTags = null;
+    }
+
+    //파일업로드
+    /*for(var i=0; inputTags != null && i<inputTags.length; i++){
+        if(inputTags[i].className == "photo"){
+            cfXecureFileUpload(form, inputTags[i].name);
+            //alert("inputTags[i].name<"+i+">"+"<"+inputTags[i].name+">");
+        }
+    }*/
+    form.target = "hiddenFrame";
+    form.action = "/pt/FileSizeChk2_kr.pt";
+    //XecureSubmit(form);
+    form.submit();
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 국제결혼 신청
+ * @return : 없음
+ * @author : 2011.03.23 HIK
+ */
+function cfApplicate2(f){
+    var form = f;
+    var inputTags = null;
+    try{
+        inputTags = document.getElementById("oInputTable3").getElementsByTagName("INPUT");
+    }catch(e){
+        inputTags = null;
+    }
+
+    //파일업로드
+    /*for(var i=0; inputTags != null && i<inputTags.length; i++){
+        if(inputTags[i].className == "photo"){
+            cfXecureFileUpload(form, inputTags[i].name);
+            //alert("cfApplicate2_inputTags[i].name<"+i+">"+"<"+inputTags[i].name+">");
+        }
+    }*/
+    form.method = "post";
+    form.target = "_self";
+    form.action = "/pt/CvlapplNatMarriageAppcDetailR_kr.pt";
+    form.submit();
+}
+
+/**
+ * @type   : function
+ * @access : public
+ * @desc   : 국제결혼 재신청
+ * @return : 없음
+ * @author : 2011.03.23 HIK
+ */
+function cfApplicate3(f){
+    var form = f;
+    var inputTags = null;
+    try{
+        inputTags = document.getElementById("oInputTable3").getElementsByTagName("INPUT");
+    }catch(e){
+        inputTags = null;
+    }
+    //파일업로드
+    /*for(var i=0; inputTags != null && i<inputTags.length; i++){
+        if(inputTags[i].className == "photo"){
+            cfXecureFileUpload(form, inputTags[i].name);
+            //alert("cfApplicate3_inputTags[i].name<"+i+">"+"<"+inputTags[i].name+">");
+        }
+    }*/
+    form.method = "post";
+    form.target = "_self";
+    form.action = "/pt/ReNatMarriageGuideU_kr.pt";
+    form.submit();
+}
+
+/**
+* @type   : function
+* @desc   : 방문사전예약 신청 (거민증 유효확인) -> 신청으로 넘어간다.
+* @return : 없음
+* @author : 2011.10.13 HIK
+*/
+function cfApplicateResvPre(){
+    cfOpenRunning(true);
+
+    var formObj = document.resvPreForm;
+    formObj.method="post";
+    //formObj.action = "/pt/kjduqhkqjljl_kr.sec";
+    formObj.target = "_self";
+    //XecureSubmit(formObj);
+    formObj.action = "/pt/kjduqhkqjljl_kr.pt";
+    formObj.submit();
+}
+
+/**
+* @type   : function
+* @access : public
+* @desc   : 방문사전예약 신청 (거민증 유효확인)
+* @return : 없음
+* @author : 2011.10.13 HIK
+*/
+function fncIdNoCheck(f){
+    var form = f;
+    form.target = "hiddenFrame";
+    /*form.action = "/pt/IdNoCheck_kr.sec";
+    XecureSubmit(form);*/
+    form.action = "/pt/IdNoCheck_kr.pt";
+    form.submit();
+}
+
+/*######################################################*/
+function cfPublicCertify3(){
+    var form = document.detailForm;
+    form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    //alert(form.juminNo.value);
+    form.target = "hiddenFrame";
+    // form.target = "_self";
+    form.action = "/pt/CvlapplEvidenceCertR_kr3.pt";
+    //alert(form.action);
+    form.submit();
+    //self.close();
+}
+
+function cfFrnRegIdChk(f){
+    var form = f;
+    form.target = "hiddenFrame";
+    form.action = "/pt/MypgBabySitterFrnRegIdChkRsltR_kr.pt";
+    form.submit();
+}
+
+function fncBabySitterApplicate(form){
+    var f = form;
+    f.target   = "_self";
+    f.action   = "/pt/MypgBabySitterInfoR_kr.pt";
+    f.submit();
+}
+
+/*외국인 취업 및 고용가능 여부 */
+function cfPublicCertify5(){
+    var form = document.detailForm;
+    form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    //alert(form.juminNo.value);
+    form.target = "hiddenFrame";
+    // form.target = "_self";
+    form.action = "/pt/CvlapplEvidenceCertR_kr4.pt";
+    //alert(form.action);
+    form.submit();
+    //self.close();
+}
+
+function cfPublicCertify5_en(){
+    var form = document.detailForm;
+    form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/CvlapplEvidenceCertR_en4.pt";
+    form.submit();
+}
+
+function cfPublicCertify5_zh(){
+    var form = document.detailForm;
+    form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/CvlapplEvidenceCertR_zh4.pt";
+    form.submit();
+}
+
+function cfInfoFrnJobRegIdChk(f){
+    var form = f;
+    form.target = "hiddenFrame";
+    form.action = "/pt/InfoFrnJobFrnRegIdChkRsltR_" + langCd + ".pt";
+    form.submit();
+}
+
+function fncInfoFrnJobApplicate(f, form){
+    var sf = f;
+    sf.repSojQualCd.value   = form.repSojQualCd.value;
+    sf.subSojQualCd.value   = form.subSojQualCd.value;
+    sf.fgnRegNo.value       = form.fgnRegNo.value;
+    sf.ekNm.value           = form.ekNm.value;
+
+    sf.target   = "_self";
+    sf.action   = "/pt/InfoFrnJobResultR_" + langCd + ".pt";
+    sf.submit();
+}
+
+function cfPublicCertify4(){
+    var form = document.detailForm;
+    form.juminNo.value = form.rsnum1.value+form.rsnum2.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/ForeignStudentCertR_kr.pt";
+    form.submit();
+}
+
+function cfApplicateFrnStud(formId){
+	var form = document.forms[formId];
+    cfOpenRunning(true);
+    form.method="post";
+    //form.action = "/pt/CvlapplFrnStudRprterCM_"+langCd+".sec";
+    form.target = "_self";
+    //XecureSubmit(form);
+    form.action = "/pt/CvlapplFrnStudRprterCM_"+langCd+".pt";
+    form.submit();
+}
+
+function cfReApplicateFrnStud(formId){
+	var form = document.forms[formId];
+    cfOpenRunning(true);
+    form.method="post";
+    //form.action = "/pt/CvlapplFrnStudChangeRprterAppUpdate_"+langCd+".sec";
+    form.target = "_self";
+    //XecureSubmit(form);
+    form.action = "/pt/CvlapplFrnStudChangeRprterAppUpdate_"+langCd+".pt";
+    form.submit();
+}
+
+//비밀번호 찾기 공인인증서 추가
+function cfFindPasswdCertify(){
+    var form = document.pwFindForm;
+    form.juminNo.value = form.juminNo1.value+form.juminNo2.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/FindPasswdCertR_kr.pt";
+    form.submit();
+}
+
+//외국인근로자 고용변동 등 민원신청정보 공인인증
+function cfCvlapplEmpCertify(){
+    var form = document.authForm;
+    form.juminNo.value = form.busiRegNo.value;
+    form.target = "hiddenFrame";
+    form.action = "/pt/InquireCvlapplCertR_kr.pt";
+    form.submit();
+}

@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>마이페이지 &lt; 하이코리아</title>
+	
+	<meta content="no-cache">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="title" content="[NO TITLE]">
+	<meta name="author" content="하이코리아">
+	<meta name="keywords" content="하이코리아">
+	<meta name="robots" content="index, follow">
+
+
+
+
+<link rel="stylesheet" type="text/css" href="./re entry permit_files/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="./re entry permit_files/style.css">
+ 
+
+<script src="./re entry permit_files/jquery-1.12.2.min.js.download"></script>
+<script src="./re entry permit_files/jquery-ui.min.js.download"></script>
+<script src="./re entry permit_files/jquery-ui-1.10.4.custom.js.download"></script>
+<script src="./re entry permit_files/jquery.form.js.download"></script>
+<script src="./re entry permit_files/jquery.fileDownload.js.download"></script>
+<script src="./re entry permit_files/jquery.bxslider.js.download"></script>
+
+
+<script src="./re entry permit_files/g4f_string.js.download"></script>
+<script src="./re entry permit_files/g4f_gVariable.js.download"></script>
+<script src="./re entry permit_files/g4f_message.js.download"></script>
+<script src="./re entry permit_files/g4f_common.js.download"></script>
+<script src="./re entry permit_files/encodeX.js.download"></script>
+<script src="./re entry permit_files/globalUtils.js.download"></script>
+<script src="./re entry permit_files/common.js.download"></script>
+<script src="./re entry permit_files/dateUtils.js.download"></script> 
+<script src="./re entry permit_files/stringUtils.js.download"></script>
+
+
+<script src="./re entry permit_files/placeholders.js.download"></script>
+
+
+<script src="./re entry permit_files/ecv.js.download"></script>
+
+
+<script src="./re entry permit_files/tinymce.min.js.download"></script>
+
+<script src="./re entry permit_files/common_pub.js.download"></script>
+<script>
+gfv_seLang = 'EN';
+console.log("gfv_seLang >>> " + gfv_seLang);
+$(document).ready(function() {
+	// UI 공통
+	// 모든 화면에서 사용
+	ctrlUi();
+});
+</script> 
+<script>
+$(document).ready(function() {
+	
+	document.title = "마이페이지 < 하이코리아";
+	
+});
+
+
+function fncList(){
+	var comSubmit = new ComSubmit();
+	comSubmit.setUrl("/mypage/MypgCvlapplPageR.pt");
+	comSubmit.addParam("searchStDt", "20201217");
+	comSubmit.addParam("searchEnDt", "20211217");
+	comSubmit.addParam("cvlapplNm", "");
+	comSubmit.tran();
+}
+
+
+/*function fncCancle(){
+	var comSubmit = new ComSubmit();
+	comSubmit.setUrl("/mypage/MypgCvlapplCancleU.pt");
+	comSubmit.addParam("cvlapplApplSeq", "2757822");
+	comSubmit.tran();
+}*/
+
+
+function fncCvlapplPrint(depth, hstSeq, juminYN) {
+	var inputParams = "";
+	
+	if(depth == '1') { // 접수증 출력
+		inputParams = {
+				cvlapplApplSeq : "2757822",
+				juminChk : juminYN,
+				orgnCvlapplCd : "J04",
+				cvlapplHstSeq : hstSeq,
+	    		popName : "CvlapplRcp",
+	    		reportTitle : "전자민원접수증"
+	    	}
+	} else if(depth == '2') { // 허가 확인서 출력
+		inputParams = {
+				cvlapplApplSeq : "2757822",
+				juminChk : juminYN,
+				orgnCvlapplCd : "J04",
+	    		popName : "CvlapplConf",
+	    		reportTitle : "전자민원 허가확인서"
+	    	}
+	} else if(depth == '3') { // 수리 확인서 출력
+		inputParams = {
+				cvlapplApplSeq : "2757822",
+				juminChk : juminYN,
+				orgnCvlapplCd : "J04",
+	    		popName : "CvlapplNoti",
+	    		reportTitle : "전자민원 수리확인서"
+	    	}
+	} else if(depth == '4') { // 수리확인서 출력(C3 재입국자 체류지 신고)
+		inputParams = {
+				cvlapplApplSeq : "2757822",
+				orgnCvlapplCd : "J04",
+	    		popName : "CvlapplConfC3Soj",
+	    		reportTitle : "C3 재입국자 체류지 신고확인서"
+	    	}
+	} else if(depth == '5') { // 불허 불수리 통지서 출력
+		inputParams = {
+				cvlapplApplSeq : "2757822",
+				juminChk : juminYN,
+				orgnCvlapplCd : "J04",
+	    		popName : "CvlapplDis",
+	    		reportTitle : "전자민원 불허 불수리확인서"
+	    	}
+	} else if(depth == '6') { // 불허 불수리 통지서 출력
+		inputParams = {
+				cvlapplApplSeq : "2757822",
+				orgnCvlapplCd : "J04",
+	    		popName : "MedicalExamExemCert",
+	    		reportTitle : "진단면제서"
+	    	}
+	}
+	
+    gfn_reportClip(inputParams);
+}
+
+function fncJuminChk(depth, hstSeq){
+	
+	gfn_confirm('외국인등록번호 및 거소신고번호의 후단번호를(뒤 6자리 번호) 표시 하시겠습니까?<BR/>※ 확인 : 1234567, 취소 : 1******<BR/>(확인을 누르면) (취소를 누르면)', function(){
+		fncCvlapplPrint(depth, hstSeq, "Y");
+	}, function(){
+		fncCvlapplPrint(depth, hstSeq, "N");
+	});
+}
+
+// 수수료요청 팝업 페이지 호출
+function fncOpenChrgReqPopupR() {
+    var cvlapplApplSeq = "2757822";
+
+    var popupUrl = "/mypage/MyCvlapplRfdRequPopupR.pt?cvlapplApplSeq="+cvlapplApplSeq;
+    cfOpen(610, 450, 5, popupUrl , "MyPageChrgReq", "scrollbars=yes");
+}
+// 수수료요청 팝업 페이지 호출
+function fncOpenChrgReqPopupR2() {
+    var f = document.pageForm;
+    f.action = "/pt/MyCvlapplRfdRequPopupR_kr2.pt";
+    f.method = "POST";
+    f.submit();
+}
+
+// 민원재신청
+function fncReApplicate(){
+	
+	var comSubmit = new ComSubmit();
+	comSubmit.setUrl("/mypage/MypgReCvlapplDetailR.pt");
+	comSubmit.addParam("cvlapplApplSeq", "2757822");
+	//comSubmit.addParam("orgnCvlapplCd", "J04");
+	comSubmit.addParam("orgnCvlapplCd", "J04");
+	comSubmit.addParam("userId", "amyas19");
+	comSubmit.addParam("fgnRegNo", "0004017660013");
+	comSubmit.addParam("passNo", "A00331350");
+	comSubmit.addParam("natCd", "588");
+	if("J04"=='J04'){
+		if($("input[name='cvlapplRsnGbCd']").val() == "S"){
+			comSubmit.addParam("docGroup", "475");
+		}else if($("input[name='cvlapplRsnGbCd']").val() == "N"){
+			comSubmit.addParam("docGroup", "474");
+		}
+	}
+	comSubmit.tran();
+}
+
+// 취소신청
+function fncCancel(){
+	gfn_confirm('Would you like to continue with your cancellation?', function(){
+		var comAjax = new ComAjax();
+
+		comAjax.setUrl("/mypage/MypgCvlapplCancelAjax.pt");
+		if("J04" == "J34"){
+			comAjax.addParam("tId", "StdpayCARDhikorea00120211216101736594465");
+		}else{
+			comAjax.addParam("tid", "");
+		}
+		comAjax.addParam("cvlapplApplSeq", "2757822");
+		comAjax.addParam("cvlapplSubSeq", "");
+		comAjax.addParam("orgnCvlapplCd", "J04");
+		comAjax.addParam("userId", "amyas19");
+		
+		if("J04" == "J34"){
+			comAjax.addParam("totalPrice", "24800");
+			comAjax.addParam("payReqMoney", cfGetNumberOnly("24,800"));
+		} else {
+			comAjax.addParam("payReqMoney", "24800");
+		}
+		comAjax.setCallBack("fn_GetCancelCallback");
+
+		comAjax.tran();
+	}, function(){
+		
+	});
+}
+
+function fn_GetCancelCallback(data){
+	
+	if(data.result.pgrStsCd == "S700") {
+		gfn_alert('Cancelled', function(){});
+		fncList();
+	} else {
+		gfn_alert('민원신청 취소가 실패했습니다.자세한 사항은 국번없이 1345(유료)에 문의하십시오.', function(){});
+	}
+}
+
+function fncReDetail() {
+	var comSubmit = new ComSubmit("frmCvlappl");
+	comSubmit.addParam("cvlapplApplSeq", "2757822");
+	comSubmit.addParam("orgnCvlapplCd", "J04");
+	comSubmit.setUrl("/mypage/MypgCvlapplDetailR.pt");
+	comSubmit.tran();
+}
+</script>
+</head>
+<body class="en"><div id="dialog-message"></div>
+
+<div id="wrapper">
+	
+
+	<div id="header">
+		<div class="top">
+			<div class="inner">
+				<div class="fr">
+					<ul class="list_header_top">				
+						<li class="pt5">
+							
+								amyas19 Logged in.
+							
+						</li>
+						<li class="pt5">
+							
+							
+								<a href="https://www.hikorea.go.kr/memb/MembLogout.pt" title="로그아웃">Log out</a>
+							
+						</li>
+						<li class="pt5">
+							
+							
+								<a href="https://www.hikorea.go.kr/mypage/mypageMain.pt" title="마이페이지">My Page</a>
+								
+						</li>
+						<li class="pt5">
+							<a href="https://www.hikorea.go.kr/guide/G4FIntroR.pt" title="이용안내">Guide</a>
+						</li>
+						<li class="pt5">
+							<a href="https://www.hikorea.go.kr/cnslt/faq/FaqListR.pt" title="고객센터">Customer Center</a>
+						</li>
+						
+						<li>
+							<div class="combo select_language">
+								<ul>
+								
+								
+								
+									<li><a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt" onclick="gfn_setLocale(&#39;kr&#39;); return false;" id="lang_kr" title="한국어">한국어</a></li>
+									<li class="selected_lang"><a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt" onclick="gfn_setLocale(&#39;en&#39;); return false;" id="lang_en" title="ENGLISH(Select)">ENGLISH</a></li>
+									<li><a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt" onclick="gfn_setLocale(&#39;ch&#39;); return false;" id="lang_ch" title="中文">中文</a></li>
+								
+								
+								
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="gnb">
+			<!-- 통합 검색 -->
+			<div id="search_all">
+				<div class="inner">					
+					<div class="sec_search">
+						<div class="form_input">
+							<div class="fl">
+								<div class="search_option">Integrated Search</div>
+							</div>
+							<div class="fr">
+								<input type="text" name="search" class="search_word" title="Search for" placeholder="Enter keyword">
+								<a href="javascript:;" class="btn_search_all" title="Search"><span class="sr-only">Search</span></a>
+							</div>
+						</div>
+					</div>
+					<div class="btn_top">
+						<a href="javascript:;" class="btn_close_search_all"><span class="sr-only">Close Integrated search</span></a>
+					</div>
+				</div>
+			</div>
+			<!-- //통합 검색 -->
+			<div class="inner">
+				<div class="img_sub_header"></div>
+
+				<div class="menu">
+					<h1>
+						<a href="https://www.hikorea.go.kr/" title="Hi Korea">Hi Korea</a>
+					</h1>
+					<div class="fr">
+						<nav>
+						<ul class="list_gnb" id="gnb" role="menubar">
+							<li>
+								<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Petition Application</a>
+								<ul role="menu" style="height: 425px;">
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/cvlappl/CvlapplStep1.pt" title="e-Application">e-Application</a>
+									</li>
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/resv/ResvIntroR.pt" title="Reserve Visit">Reserve Visit</a>
+									</li>
+									
+								</ul>
+							</li>
+							<li>
+								<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Information Lookup</a>
+								<ul role="menu" style="height: 425px;">
+									<li role="none">
+										<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Enquiry submission result </a>
+										<ul role="menu">
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/mypage/MypgCvlapplPageR.pt" title="e-Application">e-Application</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/mypage/MypgResvPageR.pt" title="Reserve Visit">Reserve Visit</a>
+											</li>
+											<li role="none">
+												<a target="_blank" href="https://www.visa.go.kr/openPage.do?MENU_ID=10301" title="Confirmation of Visa Issuance(Open new window)">Confirmation of Visa Issuance</a>
+											</li>
+										</ul>
+									</li>
+									<li role="none">
+										<!-- <a href="javascript:;" title="기타 조회 서비스">기타 조회 서비스</a> -->
+										<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Other Services</a>
+										<ul role="menu">
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/gvrnsrch/GvrnSrchPageR.pt" title="Office Directory">Office Directory</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/info/InfoFrnRegIdChkIdentityPageR.pt" title="Check Registration Card Validity">Check Registration Card Validity</a>
+											</li>
+											
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/info/CheckExprYmdByPassNoR.pt" title="Expiry Date check">Expiry Date check</a>
+											</li>
+											
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/info/OtherMyCvlapplPageR.pt" title="Search Integrated Report of Change in Employment">Search Integrated Report of Change in Employment</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/info/PermFormIssCnfrmR.pt" title="Confirm e-Application Certificate Issuance">Confirm e-Application Certificate Issuance</a>
+											</li>
+											
+										</ul>
+									</li>
+								</ul>
+							</li>
+							
+							<li>
+								<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Smart Entry Service</a>
+								<ul role="menu" style="height: 425px;">
+									<li role="none">
+										<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true" title="SeS Information">SeS Information</a>
+										<ul>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/SesInfoR.pt" title="What is Smart Entry Service?">What is Smart Entry Service?</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/SesObjectR.pt" title="Eligibility">Eligibility</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/SesUseStepR.pt" title="How to use SeS Auto-gate">How to use SeS Auto-gate</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/SesCenterR.pt" title="Ses Enrollment Centers and Airports ">Ses Enrollment Centers and Airports </a>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Mutual Use</a>
+										<ul role="menu">
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/GeApplInfoR.pt" title="Korea·US">Korea·US(SeS-GE)</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/sesecn/EcnApplInfoR.pt" title="SeS/e-Channel">SeS/e-Channel</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/sesapc/ApcApplInfoR.pt" title="SeS-APC">SeS-APC</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/sesegt/EgtApplInfoR.pt" title="SeS/e-Gate">SeS/e-Gate</a>
+											</li>
+											<li role="none">
+												<a href="https://www.hikorea.go.kr/ses/seseyp/EypApplInfoR.pt" title="SeS-EasyPASS">SeS-EasyPASS</a>
+											</li>
+										</ul>
+									</li>
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/guide/InfoDeskR.pt" title="Contact Us(only SeS)">Contact Us(only SeS)</a>
+									</li>
+								</ul>
+							</li>
+							
+							<li>
+								<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">Information sharing corner</a>
+								<ul role="menu" style="height: 425px;">
+									<li role="none">
+										<a target="_blank" title="Living in Korea(Open new window)" href="http://korea.net/">Living in Korea</a>
+									</li>
+									<li role="none">
+									
+									
+										<a href="https://www.hikorea.go.kr/info/InfoDatail.pt?CAT_SEQ=144&amp;PARENT_ID=11" title="Immigration/Stay Guide">Immigration/Stay Guide</a>
+									
+									</li>
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/info/InfoDatail.pt?CAT_SEQ=2026&amp;PARENT_ID=147" title="Nationality/Naturalization Guide">Nationality/Naturalization Guide</a>
+									</li>
+									<li role="none">
+										<a target="_blank" title="Social Integration(Open new window)" href="http://www.socinet.go.kr/">Social Integration</a>
+									</li>
+									
+									<li role="none">
+										<a target="_blank" title="Immigrant Investor(Open new window)" href="http://www.visa.go.kr/">Immigrant Investor</a>
+									</li>
+									<li role="none">
+										<a target="_blank" title="Investment(Open new window)" href="http://www.investkorea.org/">Investment</a>
+									</li>
+									<li role="none">
+										<a target="_blank" title="Employment Support(Open new window)" href="http://www.eps.go.kr/">Employment Support</a>
+									</li>
+									
+								</ul>
+							</li>
+							<li role="none" class="">
+								<a role="menuitem" href="javascript:void(0);" aria-expanded="false" aria-haspopup="true">News &amp; Announcements</a>
+								<ul role="menu" style="height: 425px;">
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/board/BoardListR.pt?BBS_GB_CD=BS10&amp;BBS_SEQ=2" title="Notice">Notice</a>
+									</li>
+									<li role="none">
+										<a target="_blank" title="Press release(Open new window)" href="http://www.immigration.go.kr/immigration/1502/subview.do">Press release</a>
+									</li>
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/board/BoardListR.pt?BBS_GB_CD=BS10&amp;BBS_SEQ=6" title="Data Library">Data Library</a>
+									</li>
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/board/BoardListR.pt?BBS_GB_CD=BS10&amp;BBS_SEQ=41" title="Application form">Application form</a>
+									</li>
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/board/BoardListR.pt?BBS_GB_CD=BS10&amp;BBS_SEQ=76" title="Newsletter ">Newsletter </a>
+									</li>									
+									<li role="none">
+										<a href="https://www.hikorea.go.kr/board/BoardListR.pt?BBS_GB_CD=BS10&amp;BBS_SEQ=32" title="COVID-19 Information">COVID-19 Information</a>
+									</li>									
+									
+									<!-- <li role="none">
+										<a href="/samples/side/sidemenulanglist.pt">비회원인 경우에는 비밀번호를 입력하셔야 합니다.</a>
+									</li> -->
+								</ul>
+							</li>
+						</ul>
+						</nav>
+					</div>
+				</div>
+				
+				<div class="textbox_sub">
+					<div class="row_top">HiKorea</div>
+					<!-- 1depth 에 따라 text 내용 구분
+					민원신청 -->
+					<div class="row_bottom">provides convenient online application services.</div>
+					
+				</div>
+				
+				
+			</div>
+		</div>
+	</div>
+	<!-- //header -->
+	<div id="container">
+		<div class="inner">
+			
+			<div id="side">
+				<div class="lnb">
+<h1 class="box_sz_bd"><a title="MY Page">MY Page</a></h1>
+<ul class="list_lnb">
+<li class="main_li_seq111">
+<a title="Membership"><h2>Membership</h2></a>
+<ul>
+<li class="sub_li_seq1112">
+<a href="https://www.hikorea.go.kr/mypage/pwdConfirm.pt" title="Modifying member information"><h2>Modifying member information</h2></a></li>
+<li class="sub_li_seq1111">
+<a href="https://www.hikorea.go.kr/mypage/membInfoAppcDM.pt" title="Terminate account"><h2>Terminate account</h2></a></li>
+</ul>
+</li>
+<li class="main_li_seq5156">
+<a href="https://www.hikorea.go.kr/mypage/qnaPageR.pt" title="1:1 support"><h2>1:1 support</h2></a>
+</li>
+<li class="active">
+<a href="https://www.hikorea.go.kr/mypage/MypgCvlapplPageR.pt" title="e-Application Status"><h2>e-Application Status</h2></a>
+</li>
+<li class="main_li_seq113">
+<a href="https://www.hikorea.go.kr/mypage/MypgResvPageR.pt" title="Reserve Visit Status(member)"><h2>Reserve Visit Status(member)</h2></a>
+</li>
+<li class="main_li_seq119">
+<a href="https://www.hikorea.go.kr/mypage/sesGeStatPageR.pt" title="Smart Entry Service Status"><h2>Smart Entry Service Status</h2></a>
+</li>
+<li class="main_li_seq5235">
+<a href="https://www.hikorea.go.kr/mypage/SesExtensionInfo.pt" title="Membership Extension (SeS)"><h2>Membership Extension (SeS)</h2></a>
+</li>
+</ul>
+</div>
+</div>
+
+			<div id="content">
+				<div class="section_title">
+					<div class="location_bar">
+						<div class="location">
+							<span><a title="null" class="home">null</a></span> <span><a href="https://www.hikorea.go.kr/mypage/mypageMain.pt" title="MY Page">MY Page</a></span> <span><a href="https://www.hikorea.go.kr/mypage/MypgCvlapplPageR.pt" title="e-Application Status" class="current">e-Application Status</a></span> 
+						</div>
+					</div>
+					<h1>Online petition - View details </h1>
+				</div>
+				<div class="section_content">
+					<!-- content box -->
+					<div>
+						<form name="frmCvlappl" id="frmCvlappl">
+						<h2>Information about a foreign applicant </h2>
+						<table class="grid" "="">
+							<caption><strong>Information about a foreign applicant </strong><details><summary>설명</summary> <p>Name, Nationality, Alien registrationnumber, Passport No., Phone Number, Phone Number(Mobile) , Email address 정보를 포함하는 표</p></details></caption>
+							<colgroup>
+								<col style="width: 20%">
+								<col style="width: 30%">
+								<col style="width: 20%">
+								<col style="width: 30%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th class="tdLabel" scope="row">Name</th>
+									<td class="tdData">OGURU MATTHEW AMYAS</td>
+									<th class="tdLabel" scope="row">Nationality</th>
+									<td class="tdData">UGANDA</td>
+								</tr>
+								<tr>
+									<th class="tdLabel" scope="row">Alien registration<br>number</th>
+									<td class="tdData">
+										
+										000401-766-0013
+									</td>
+									<th class="tdLabel" scope="row">Passport No.</th>
+									<td class="tdData">A00331350</td>
+								</tr>
+								
+									<tr>
+										<th class="tdLabel" scope="row">Phone Number</th>
+										<td class="tdData">01097371961</td>
+										<th class="tdLabel" scope="row">Phone Number<br>(Mobile) </th>
+										<td class="tdData">01097371961</td>
+									</tr>
+									<tr>
+										<th class="tdLabel" scope="row">Email address</th>
+										<td class="tdData" colspan="3">ogurumatthew@gmail.com</td>
+									</tr>
+								
+							</tbody>
+						</table>
+						<br>
+						<h2>Application Status History</h2>
+						<table class="grid">
+							<caption><strong>View Application Status History</strong><details><summary>설명</summary> <p>Petitioner, ProcessStatus, Competent Authority 정보를 포함하는 표</p></details></caption>
+							<colgroup>
+								<col style="width: 15%">
+								<col style="width: 25%">
+								<col style="width: 30%">
+								<col style="width: 40%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th class="tdLabel" scope="row">Petitioner</th>
+									<td class="tdData" colspan="3">Re-entry permit (single)</td>
+								</tr>
+								
+													
+									<tr>
+										<th class="tdLabel" scope="row">Process<br>Status</th>
+										<td class="tdData">Processed (Granted)</td>
+										<th class="tdLabel" scope="row">Competent Authority</th>
+										<td class="tdData">
+											
+												Ministry of Justice(Sokcho Branch Office)
+												
+											
+										</td>
+									</tr>
+								
+								
+							</tbody>
+						</table>
+						<br>
+						
+							<h2>Payment details</h2>
+							<table class="grid">
+								<caption><strong>Payment details</strong><details><summary>설명</summary> <p>Payment Status, Payment method, Name of the person making payment, Payment amount 정보를 포함하는 표</p></details></caption>
+								<colgroup>
+									<col style="width: 20%">
+									<col style="width: 30%">
+									<col style="width: 20%">
+									<col style="width: 30%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th class="tdLabel" scope="row">Payment Status</th>
+										<td class="tdData">Transaction successful</td>
+										<th class="tdLabel" scope="row">Payment method</th>
+										<td class="tdData">Credit Card(Personal)</td>
+									</tr>
+									<tr>
+										<th class="tdLabel" scope="row">Name of the person making payment</th>
+										<td class="tdData">
+											
+												
+												OGURU MATTHEW AMYAS
+											
+										</td>
+										<th class="tdLabel" scope="row">Payment amount</th>
+										<td class="tdData">24,800 won</td>
+									</tr>
+									<!--tr>
+										<th class="tdLabel" scope="row">Receipt</th>
+										<td class="tdData" colspan="3">
+											<a href="MyCvlapplDetailR.jsp" class="button_default" onclick="cfOpen(430,700, 2, 'https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=' + 'StdpayCARDhikorea00120211216101736594465' + '&noMethod=1','receipt');return false;" title="새창열림">Confirm</a>
+										</td>
+									</tr-->
+									
+								</tbody>
+							</table>
+							<br>
+						
+						
+						
+						<h2>Progress</h2>
+						<table class="grid tac">
+							<caption><strong>Progress</strong><details><summary>설명</summary> <p>, Issuance number, Print, Status, Person incharge, Processedcontent, Processeddate 정보를 포함하는 표</p></details></caption>
+							<colgroup>
+								<col style="width: 4%">
+								<col style="width: 14%">
+								<col style="width: 13%">
+								<col style="width: 14%">
+								<col style="width: 8%">
+								<col style="width: 35%">
+								<col style="width: 12%">
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="tdLabel" scope="row"></th>
+									<th class="tdLabel" scope="row">Issuance number</th>
+									<th class="tdLabel" scope="row">Print</th>
+									<th class="tdLabel" scope="row">Status</th>
+									<th class="tdLabel" scope="row">Person in<br>charge</th>
+									<th class="tdLabel" scope="row">Processed<br>content</th>
+									<th class="tdLabel" scope="row">Processed<br>date</th>
+								</tr>
+							</thead>
+							<tbody>
+								
+								
+								
+								<tr>
+									<td class="tdData">1</td>
+									<td class="tdData">
+										
+										
+											
+												2021002757822
+											
+										
+									</td>
+									<td class="tdData">
+										<input type="hidden" name="cvlapplRsnGbCd" value="N">
+									
+										
+										
+											
+										
+										
+										
+										
+									
+									</td>
+									<td class="tdData">Applied</td>
+									<td class="tdData"></td>
+									<td class="tdData">
+										
+											
+											
+											
+											
+											
+										
+									</td>
+									<td class="tdData">2021-12-16</td>
+								</tr>
+								
+								<tr>
+									<td class="tdData">2</td>
+									<td class="tdData">
+										
+										
+											
+										
+									</td>
+									<td class="tdData">
+										<input type="hidden" name="cvlapplRsnGbCd" value="N">
+									
+										
+										
+											
+										
+										
+										
+										
+									
+									</td>
+									<td class="tdData">Request supplementation</td>
+									<td class="tdData">이승준</td>
+									<td class="tdData">
+										
+											
+											
+											
+											
+											Please use formal form of '사유서'. You've submitted your own form. With this document, we can not grant your re-entry.
+										
+									</td>
+									<td class="tdData">2021-12-16</td>
+								</tr>
+								
+								<tr>
+									<td class="tdData">3</td>
+									<td class="tdData">
+										
+										
+											
+										
+									</td>
+									<td class="tdData">
+										<input type="hidden" name="cvlapplRsnGbCd" value="N">
+									
+										
+										
+											
+										
+										
+										
+										
+									
+									</td>
+									<td class="tdData">Refile application</td>
+									<td class="tdData"></td>
+									<td class="tdData">
+										
+											
+											
+											
+											
+											
+										
+									</td>
+									<td class="tdData">2021-12-16</td>
+								</tr>
+								
+								<tr>
+									<td class="tdData">4</td>
+									<td class="tdData">
+										
+										
+											
+										
+									</td>
+									<td class="tdData">
+										<input type="hidden" name="cvlapplRsnGbCd" value="N">
+									
+										
+										
+											
+										
+										
+										
+										
+									
+									</td>
+									<td class="tdData">Refile application</td>
+									<td class="tdData"></td>
+									<td class="tdData">
+										
+											
+											
+											
+											
+											
+										
+									</td>
+									<td class="tdData">2021-12-16</td>
+								</tr>
+								
+								<tr>
+									<td class="tdData">5</td>
+									<td class="tdData">
+										
+										
+											
+												SOBF21000582
+											
+										
+									</td>
+									<td class="tdData">
+										<input type="hidden" name="cvlapplRsnGbCd" value="N">
+									
+										
+									
+										
+											<a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt#" class="btn_in_tbl" onclick="fncJuminChk(&#39;1&#39;, &#39;3309030&#39;); return false;" title="새창">Registrastion Receipt</a>
+										
+										
+											
+										
+										
+										
+										
+									
+									</td>
+									<td class="tdData">Received</td>
+									<td class="tdData">이승준</td>
+									<td class="tdData">
+										
+											
+											
+											
+											
+											
+										
+									</td>
+									<td class="tdData">2021-12-16</td>
+								</tr>
+								
+								<tr>
+									<td class="tdData">6</td>
+									<td class="tdData">
+										
+										
+											
+										
+									</td>
+									<td class="tdData">
+										<input type="hidden" name="cvlapplRsnGbCd" value="N">
+									
+										
+									
+										
+										
+											
+												
+												<a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt#" class="btn_in_tbl" onclick="fncJuminChk(&#39;2&#39;); return false;" title="새창">
+													Confirmation Form
+												</a>
+												
+												
+												
+											
+										
+										
+										
+										
+									
+									</td>
+									<td class="tdData">Processed (Granted)</td>
+									<td class="tdData"></td>
+									<td class="tdData">
+										
+											
+											
+											
+											
+											
+											
+										
+									</td>
+									<td class="tdData">2021-12-16</td>
+								</tr>
+								
+							</tbody>
+						</table>
+						
+						
+						<br>
+						
+							
+								<div class="grp_search">
+									<div class="search_term">
+										<table class="tbl_search">
+											<colgroup>
+												<col style="width: 100px">
+												<col>
+											</colgroup>
+											<tbody>
+												<tr>
+													<td></td>
+													<td>
+														※ The service charge will be refunded if your application is rejected for any reason.
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							
+							
+							
+						
+						<div class="grp_button">
+							
+							
+								
+							
+							
+							<a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt#this" onclick="fncList();return false;" class="btn_blue">List</a>
+						</div>
+					</form>
+					</div>
+				</div>
+			</div>
+			
+			<!-- //content -->
+		</div>
+	</div>
+	
+
+	<p id="btn_go_top" style="display: none;"><a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt#" title="맨 위로 이동">TOP</a></p>
+	<div id="footer">
+		<div class="list_footer_menu">
+			<div class="inner">
+				<div>
+					<a href="https://www.hikorea.go.kr/guide/UsrInfoPttPlcyR.pt">Privacy policy</a>
+				</div>
+				
+				<div>
+					<a href="http://152.99.88.171/" target="_blank" title="Open new window">Remote access</a>
+				</div>
+				<div>
+					<a href="javascript:;">Related websites</a>
+				</div>
+				<div>
+					<a href="javascript:;">Local/provincial government</a>
+				</div>
+			</div>
+		</div>
+		<div class="information">
+			<div class="inner">
+				<div class="contact">
+					<div class="fl">
+						<span class="number">1345</span>
+						<span>(Without an area code)</span>
+						<span>(FAX) 02-2650-4550</span>
+						<span>(Overseas inquiry) +82-1345, +82-2-6908-1345~6</span>
+						<div class="link_sns">
+							<a href="http://twitter.com/IMMIGRATION_KR" target="_blank" class="twitter" title="Open new window">Twitter</a>
+							<a href="http://www.facebook.com/immigration.kr" target="_blank" class="facebook" title="Open new window">Facebook</a>
+						</div>
+					</div>
+					<div class="fr">
+						<div class="combo download_viewer">
+							<div class="selected">
+								<a href="https://www.hikorea.go.kr/mypage/MypgCvlapplDetailR.pt#this" class="acrobat" title="다운로드 목록 열기">다운로드</a>
+							</div>
+							<div class="expand">
+								<a href="http://get.adobe.com/kr/reader/" class="acrobat" title="Download Acrobat" target="_blank">Download Acrobat</a>
+								<a href="http://www.microsoft.com/downloads/ko-kr/details.aspx?FamilyID=1cd6acf9-ce06-4e1c-8dcf-f33f669dbc3a&amp;DisplayLang=ko" class="excel" title="Download Excel" target="_blank">Download Excel</a>
+								<a href="http://www.hancom.co.kr/downLoad.downPU.do?mcd=001" class="hangeul" title="Download Hangeul" target="_blank">Download Hangeul</a>
+								<a href="ttp://www.microsoft.com/downloads/ko-kr/details.aspx?FamilyID=3657ce88-7cfa-457a-9aec-f4f827f20cac&amp;DisplayLang=ko" class="word" title="Download Word" target="_blank">Download Word</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="copyright">
+					<span>Copyright ⓒ 2020 HI KOREA. All rights Reserved.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+<!-- <script type="text/javascript" src="/TouchEn/nxKey/js/TouchEnNx.js"></script> -->	
+<form style="display: none" name="frmCmmAuth" id="frmCmmAuth" method="post" action="https://www.hikorea.go.kr/"></form>
+</div>
+
+
+</body></html>

@@ -1,0 +1,1095 @@
+﻿/**
+ * @type : intro
+ * @desc : g4f_message.js는 프로젝트 전반에 걸쳐 전 시스템에서 공통으로 사용하는 메시지를 기술한
+ * 자바스크립트 파일이다. 빈번히 사용되는 메시지이 화면마다 반복적으로 하드코딩되지
+ * 않도록 미리 정의되어 있어서 g4f_message.js를 업무화면에 import시키기만 하고
+ * 각 개발자가 별도로 개발할 필요가 없다.<br><br>
+ *
+ * 메시지 Naming Rule은 다음과 같다.
+ * <pre>
+ *     - MSG_<서브시스템명>_<기능명>_<일련번호>  
+ *     - 기능명 : INF[information] : 정상적인 처리결과를 사용자에게 알려주는 메시지
+ *               CRM[Confirmation] : 프로세스를 계속 진행할지 의사결정을 요청하는 메시지
+ *               ERR[Eorror] : 비정상적인 처리결과를 사용자에게 알려주는 메시지
+ *               WRN[Warning] : 프로세스를 진행하기 위한 필요조건을 충족시키도록 요구하는 메시지
+ * </pre>
+ * @version : 1.0
+ * @change  :
+ * <pre>j
+ *     <font color="blue">V1.0</font>
+ *     - 최초버전.
+ * </pre>
+ */
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_001   = "성공적으로 저장하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_002   = "성공적으로 등록하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_003   = "성공적으로 수정하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_004   = "성공적으로 삭제하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_005   = "성공적으로 출력되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_006   = "관리자에게 문의하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_007   = "@을(를) 성공적으로 저장하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_008   = "@을(를) 성공적으로 생성하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_009   = "@이(가) 삭제되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_010   = "처리가 취소되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_011   = "유효한 @입니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_012   = "@ 건의 데이터가 조회되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_013   = "성공적으로 요청되었습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_INF_020   =  "PASSWORD실패 3회발생시 로그인이 불가능합니다.\n관리자에게 문의해 주시기 바랍니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_001   = "저장하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_002   = "등록하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_003   = "수정하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_004   = "삭제하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_005   = "변경사항이 반영되지 않았습니다. 저장하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_006   = "이미 존재하는 @ 입니다. 추가하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_007   = "@을(를) 삭제하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_008   = "@을(를) 생성하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_009   = "@을(를) 적용하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_010   = "취소하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_011   = "즉시 승인하시겠습니까?";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_012   = "추가로 @을(를) 등록하시겠습니까?";     //김현구 추가
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_013   = "@ 하시겠습니까?";          
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_014   = "@ 취소하시겠습니까?";     
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_015   = "정말 탈퇴시키시겠습니까?";      
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_CRM_016   = "@명에게 전송하시겠습니까?";       
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_001   = "@은(는) 변경된 사항이 없습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_002   = "@은(는) 필수 입력 항목입니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_003   = "해당되는 자료가 존재하지 않습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_004   = "@은(는) 공백없이 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_005   = "@은(는) @자리수만큼 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_006   = "@은(는) @부터 @사이로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_007   = "@은(는) 숫자만을 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_008   = "@은(는) 문자만을 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_009   = "@은(는) 숫자와 문자만을 입력하십시오.(공백제외)";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_010   = "@은(는) 숫자와 문자만을 입력하십시오.(공백포함)";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_011   = "@은(는) @자 이상으로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_012   = "@은(는) @자 이하로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_013   = "@은(는) @ 이상으로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_014   = "@은(는) @ 이하로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_015   = "@은(는) 년도가 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_016   = "@은(는) 유효한 주민등록번호가 아닙니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_017   = "@은(는) 유효한 사업자등록번호가 아닙니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_018   = "@은(는) 유효한 날짜가 아닙니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_019   = "@은(는) 월이 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_020   = "@은(는) 일이 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_021   = "@은(는) 시가 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_022   = "@은(는) 분이 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_023   = "@은(는) 초가 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_025   = "@은(는) @년 @월 @일 이후이어야 합니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_024   = "@은(는) @년 @월 @일 이전이어야 합니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_026   = "@은(는) '@' 형식이어야 합니다.\n" +
+                            "  - # : 문자 혹은 숫자\n" +
+                            "  - h, H : 한글(H는 공백포함)\n" +
+                            "  - A, Z : 문자(Z는 공백포함)\n" +
+                            "  - 0, 9 : 숫자(9는 공백포함)";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_027   =  "@은(는) @자리수만큼 입력하십시오. (한글은 @자리수)";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_028   =  "@은(는) @자 이상으로 입력하십시오. (한글은 @자 이상)";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_029   =  "@은(는) @자 이하로 입력하십시오. (한글은 @자 이하)";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_030   =  "@은(는) ";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_031   =  "@의 @번째 데이터에서 ";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_032   =  "@은(는) 중복될 수 없습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_033   =  "@은(는) 다음 문자가 올 수 없습니다.\n@";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_034   =  "페이지 설정이 잘못되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_035   =  "@페이지 이상은 출력할 수 없습니다";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_036   =  "@은(는) 다음 문자만 올 수 있습니다.\n@";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_037   =  "@은(는) 유효한 이메일 주소가 아닙니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_038   =  "유효한 @가 아닙니다."
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_039   =  "시작일자를 종료일자 이전으로 선택[입력]하여 주십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_040   =  "패스워드가 일치하지 않습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_041   =  "@은(는) @할 수 없습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_042   =  "@은(는) 변경된 사항이 있습니다. \n변경사항을 저장 후 @을(를) 수행하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_043	  =  "유효하지 않는 @ 입니다.\n다시 입력하여주십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_045   =  "시작범위는 종료범위보다 작아야 합니다. :@";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_046   =  "존재하지 않는 @입니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_047   =  "오류가 발생하였습니다.\n관리자에게 문의하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_048   =  "@은(는) @보다 작아야 합니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_049   =  "@이(가) 존재하지 않습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_050   =  "오류가 발생하였습니다.\n처음부터 다시 시작하여 주십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_051   =  "@을(를) 실패하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_052   =  "해당조건의 @이(가) 존재하지 않습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_053   =  "@이(가) 누락되었습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_054   =  "@ 생성을 실패하였습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_055   =  "@을(를) 확인하여 주십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_056   =  "선택된 @이(가) 없습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_057   =  "@은(는) @ 보다 큰 값으로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_058   =  "시작시간을 종료시간 이전으로 선택[입력]하여 주십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_059   =  "@은(는) 정수부를 @자 이하로 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_060   =  "@은(는) 소수부를 @자 이하로 입력하십시오.";
+
+
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_061   =  "첨부파일이 없습니다. 다시 확인하십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_062   =  "첨부파일의 사이즈가 너무 큽니다. 다시 확인하십시오";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_063   =  "파일의 지정된 경로를 찾을 수 없습니다. 해당 파일을 다시 확인하십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_064   =  "작업이 아직 저장 되지 않았습니다.\n확인을 누르시면 작업 사항이 사라집니다.\n조회하시겠습니까?";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_065	  =  "@와 @ 둘중 하나는 입력하셔야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_066	  =  "@ 자료가 없습니다.  @ 선행되어야합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_067	  =  "@ 중 하나는 반드시 입력해야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_068   =  "@은(는) @보다 작거나 같아야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_069   =  "@은(는) 지원하지 않습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_070   =  "@은(는) @와(과) 같아야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_071   =  "로그인하지 않았거나 로그아웃된 상태입니다. 먼저 로그인하십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_072   =  "해당 메뉴에 대한 권한이 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_073   =  "@을[를] 실행하여 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_074   =  "이미 @하셨습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_075   = "@은(는) 유효한 법인번호가 아닙니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_076   = "@이(가) 아닙니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_077   =  "등록할 @을(를) 선택해 주세요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_078   =  "@ 입니다.\n 다시 입력하여 주십시요.";  //Ex) 중복된 아이디 입니다. \n 다시 입력하여 주십시요.
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_079   = "@은(는) 숫자와 문자를 조합하여 입력하십시오.(공백제외)";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_080   = "@은(는) 유효한 외국인등록번호가 아닙니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_081   = "@은(는) 영문으로만 입력하십시오.(공백포함)";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_082   = "첨부파일의 최대사이즈는 @입니다. 다시 확인하십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_083   =  "해당 데이터가 존재하지 않습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_084   =  "소수점 @ 자리까지만 입력가능합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_085   =  "디자인탭에서만 저장이 가능합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_086   =  "@ 할 수 있습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_ERR_087   = "@은(는) 숫자, 문자, 특수문자 중 두가지를 조합하여 입력하십시오.(공백제외)";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_001   =  "저장할 데이터가 존재하지 않습니다.\n먼저 @검색을 하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_002   =  "조회결과가 존재하지 않습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_003   =  "@을(를) 입력하십시오.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_004   =  "삭제할 @이(가) 존재하지 않습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_005   =  "답변이 존재하므로 삭제할 수 없습니다.";
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_006   =  "유사가 체크되어있지 않고 \n생년월일과 조회 결과가 있어야 \n출력하실 수 있습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_007   =  "@은(는) @에 대한 권한이 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_008   =  "@에 대한 권한이 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_009   =  "@는 비공개 데이터 입니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_010   =  "검색결과 출력제한 건수(@)를 초과 하였습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_011   =  "비밀번호는 영문과 숫자조합으로 입력하여 주십시요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_012   =  "@부터 조회 가능합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_013   =  "조회는 1년 단위로만 입력하십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_014   =  "@은(는) 영문으로 입력하여 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_015   =  "@은(는) @ @시부터 @시까지입니다.\n(토,일요일,공휴일 제외)";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_016   =  "오랫동안 작업하지 않아 세션이 만료되었습니다.\n다시 로그인해주시기 바랍니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_017   =  "답변이 존재하므로 수정할 수 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_018   =  "비밀번호는 영문,숫자 조합으로 입력하여 주십시요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_019   =  "비밀번호를 입력하여 주십시요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_020   =  "비밀번호를 10자에서 15자 사이로 입력하세요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COM_WRN_021   =  "동일한 영문,숫자가 나란히 사용되었습니다. \n ex)aa, bb, 11, 22";
+////////////////////////////////  PT MSG ///////////////////////////////////////////
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_001   =  "입력번호가 틀립니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_002   =  "아이디 중복체크를 해 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_003   =  "재신청을 하시겠습니까?";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_004   =  "환불요청을 하시겠습니까?";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_005   =  "@은(는) 한글과 특수문자는 입력하실수 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_006   =  "@은(는) 100%를 넘을 수는 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_007   =  "주주는 1명이상  입력하셔야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_008   =  "주주구성항목 중 일반주 또는 우선주 항목 하나는 입력하셔야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_009   =  "주주명을 입력해 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_010   =  "@은(는) 1000%를 넘을 수는 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_011   =  "제품명은 반드시 하나 이상  입력하셔야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_012   =  "제품군 항목은 반드시 입력하셔야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_013   =  "제품명을 입력해 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_014   =  "년도별 매출을 입력하여 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_015   =  "매출을 입력하여 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_016   =  "재무재표의 각항목(년도)을 모두 입력해 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_017   =  "총자산은 총부채와 자본의 합이 되어야 합니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_018   =  "투자형태를 선택하여 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_019   =  "투자분야를 선택하십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_020   =  "투자의향서 또는 투자요청서를 등록하셔야 조회할 수 있습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_021   =  "@";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_INF_022   =  "민원신청 대상이 아닙니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_CRM_001   =  "게시판에 속한 모든 포스트가 삭제됩니다.\n게시판을 삭제하시겠습니까?";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PT_WRN_001   =  "@님의 블로그가 폐쇄되었습니다. \n관리자에게 문의하십시오.";
+
+
+
+////////////////////////////////  PTMGMT MSG ///////////////////////////////////////////
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PTMGMT_ERR_001=  "권한부여나 권한회수시는 그룹을 먼저 선택하여 주십시오.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PTMGMT_ERR_002=  "@는 적용가능일자가 아닙니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PTMGMT_ERR_003=  "더이상 @을(를) 삭제할 수 없습니다.";
+
+
+////////////////////////////////  COP MSG ///////////////////////////////////////////
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COP_INF_001   = "@ 중복체크를 해주십시요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COP_INF_002   = "등록 가능한 @입니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COP_WRN_001   =  "국가선택은 7개를 초과할 수 없습니다.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COP_WRN_002   =  "5개의 국가를 선택하세요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_COP_WRN_003   =  "기관 담당자는 한명만 지정하실 수 있습니다.";
+
+////////////////////////////////  PGW MSG ///////////////////////////////////////////
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PGW_CRM_001 = "비밀번호가 일치하지 않습니다.확인해 주십시오."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PGW_CRM_002 = "@, 반려하시겠습니까?"
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PGW_CRM_003 = "@, 송부하시겠습니까?"
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PGW_CRM_004 = "@, 회신하시겠습니까?"
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_PGW_CRM_005 = "@, 첨부파일 재전송 요청을 하시겠습니까??"
+
+////////////////////////////////  INV MSG ///////////////////////////////////////////
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_INV_ERR_001 = "@은 검색창에서 선택해 주십시오."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_INV_CRM_001 = "@은 하위메뉴(코드)가 존재합니다. 삭제하시겠습니까?"
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_INV_INF_001 = "진행상태가 아닙니다."
+ 
+  
+////////////////////////////////  ISI MSG ///////////////////////////////////////////
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_001 = "@는 한 건 이상 선택할 수 없습니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_002 = "주민등록번호가 변경되었습니다. 변경통보버튼을 클릭하세요."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_003 = "성명과 주민등록번호가 수정되었을 때에만 변경통보가 가능합니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_004 = "@번째 줄에서 에러가 발생했습니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_005 = "약관에 동의하지 않았으므로 인증이 불가능합니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_006 = "@은(는) 당월 @년 @월에만 가능합니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_007 = "@은(는) 매월 @일 ~ @일입니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_008 = "@(이)가 일치하지 않습니다. @하실수 없습니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_009 = "계열의 @를 먼저 선택하세요."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_010 = "대표자 @은 필수 입력입니다.교육기관정보 수정화면에서 수정 해주세요.";
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_011 = "전체선택을 해주세요."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_012 = "이메일이 발송된 표준입학허가서는 삭제할 수 없습니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_INF_013 = "@에 동의하셔야 합니다."
+
+/**
+ * @type   : var
+ * @access : public
+ */
+var MSG_ISI_CRM_001 = "이메일을 전송하시겠습니까?"
+
